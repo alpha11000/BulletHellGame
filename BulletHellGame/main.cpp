@@ -5,6 +5,10 @@
 int ms = 1000 / 30;
 ctrl::Actor actor;
 
+void setColor(vis::Material material) {
+	glColor4f(material.r, material.g, material.b, material.a);
+}
+
 void drawActor(ctrl::Actor actor) {
 
 	vis::GameObject gameObject = actor.getGameObject();
@@ -22,16 +26,42 @@ void drawActor(ctrl::Actor actor) {
 	auto materialIndexes = gameObject.getMaterialsIndexes();
 
 	int polIndex = 0;
-	int a = 1;
-	int matIndex= 0;
 	vis::Material mat = vis::Material();
+
+	int mi = 0;
+	int nextMatIndex = 0;
+
+	if (materialIndexes.size() > 0) {
+		mat = materialIndexes[0].second;
+	}
+
+	if (materialIndexes.size() >= 1) {
+		nextMatIndex = materialIndexes[1].first;
+	}
+
+	glPushMatrix();
+	glTranslatef(0, 0, -50);
+	glRotatef(actor.getPosition().z, 0, 1, 0);
+
+	setColor(mat);
 
 	for (vis::Polygon p : polygons) {
 		glBegin(GL_POLYGON);
 
+		if (polIndex >= nextMatIndex) {
+			if (mi < materialIndexes.size()) {
+				mat = materialIndexes[mi++].second;
+				setColor(mat);
+			}
+
+			if (mi < materialIndexes.size()) {
+				nextMatIndex = materialIndexes[mi].first;
+			}
+		}
+
 		polIndex++;
 
-		if (normals.size() < p.normalIndex - 1) {
+		if (normals.size() > p.normalIndex - 1) {
 			vis::Vector3 normal = normals[p.normalIndex - 1];
 			glNormal3f(normal.x, normal.y, normal.z);
 		}
@@ -42,6 +72,7 @@ void drawActor(ctrl::Actor actor) {
 
 		glEnd();
 	}
+	glPopMatrix();
 }
 
 void render() {
@@ -77,6 +108,7 @@ void reshape(int w, int h) {
 }
 
 void update(int val) {
+	actor.translate(0, 0, 4);
 	glutPostRedisplay();
 	glutTimerFunc(ms, update, 0);
 }
