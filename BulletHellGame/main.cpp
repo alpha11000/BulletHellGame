@@ -1,4 +1,3 @@
-#include "Header.h"
 #include "objectUtil.hpp"
 
 int main(int argc, char** argv) {
@@ -9,6 +8,5 @@ int main(int argc, char** argv) {
 	fopen_s(&mtl, "../res/porsche.mtl", "r");
 
 	vis::ObjectUtil::loadObjModel(obj, mtl); 
-
 
 }
