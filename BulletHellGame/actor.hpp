@@ -22,5 +22,9 @@ namespace vis {
 			pos.y += tY;
 			pos.z += tZ;
 		}
+
+		GameObject getGameObject() {return gameObject;}
+		Vector3 getPosition() { return pos; }
+		Vector3 getRotation() { return rot; }
 	};
 }

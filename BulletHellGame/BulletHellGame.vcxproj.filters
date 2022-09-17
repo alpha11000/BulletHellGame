@@ -23,8 +23,8 @@
     <ClInclude Include="objectUtil.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="NewFile.txt" />
+    <ClInclude Include="actor.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

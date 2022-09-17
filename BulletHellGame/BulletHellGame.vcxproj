@@ -135,10 +135,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="actor.hpp" />
     <ClInclude Include="objectUtil.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="NewFile.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,6 +3,7 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <list>
+#include <vector>
 #include <string>
 #include <map>
 
@@ -41,15 +42,25 @@ namespace vis {
 
 		Polygon* polygons;
 
-		std::pair<int, Material>* materialsIndexes;
+		std::vector<std::pair<int, Material>> materialsIndexes;
 
 	public:
-		GameObject(Vector3* vertices = nullptr, Vector3* normals = nullptr, Vector3* uvCoordinates = nullptr, Polygon* polygons = nullptr, std::pair<int, Material>* materialsIndexes = nullptr) :
+		GameObject(Vector3* vertices = nullptr,
+			Vector3* normals = nullptr,
+			Vector3* uvCoordinates = nullptr,
+			Polygon* polygons = nullptr,
+			std::vector<std::pair<int, Material>> materialsIndexes = std::vector< std::pair<int, vis::Material> >(1, std::make_pair(0, vis::Material()))) :
 			vertices(vertices),
 			normals(normals),
 			uvCoordinates(uvCoordinates),
 			polygons(polygons),
-			materialsIndexes(materialsIndexes){}
+			materialsIndexes(materialsIndexes) {}
+
+		Vector3* getVertices() { return vertices; }
+		Vector3* getNormals() { return normals; }
+		Vector3* getUvCordinates() { return uvCoordinates; }
+		Polygon* getPolygons() { return polygons; }
+		std::vector<std::pair<int, Material>> getMaterialsIndexes() { return materialsIndexes; }
 	};
 
 	class ObjectUtil {
@@ -63,7 +74,7 @@ namespace vis {
 
 		static GameObject loadObjModel(FILE* obj, FILE* mtl) {
 			std::map<std::string, Material> materials;
-			std::list<std::pair<int, Material>> materialsIndexes;
+			std::vector<std::pair<int, Material>> materialsIndexes;
 
 			auto err_mat = Material();
 			materials[err_mat.name] = err_mat;
@@ -179,16 +190,12 @@ namespace vis {
 					}
 				}
 			}
-
-			auto materialsIndexesArray = new std::pair<int, Material>[materialsIndexes.size()];
-			
 			auto verticesArray = new Vector3[vertices.size()],
 				uvCordinatesArray = new Vector3[uvCordinates.size()],
 				normalsArray = new Vector3[normals.size()];
 
 			auto polygonsArray = new Polygon[polygons.size()];
 
-			std::copy(materialsIndexes.begin(), materialsIndexes.end(), materialsIndexesArray);
 			std::copy(vertices.begin(), vertices.end(), verticesArray);
 			std::copy(uvCordinates.begin(), uvCordinates.end(), uvCordinatesArray);
 			std::copy(normals.begin(), normals.end(), normalsArray);
@@ -199,7 +206,7 @@ namespace vis {
 				std::cout << mm.first << "  " << mm.second.name << std::endl;
 			}
 
-			GameObject gameObject = GameObject(verticesArray, normalsArray, uvCordinatesArray, polygonsArray, materialsIndexesArray);
+			GameObject gameObject = GameObject(verticesArray, normalsArray, uvCordinatesArray, polygonsArray, materialsIndexes);
 
 			return gameObject;
 		}
