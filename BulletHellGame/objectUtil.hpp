@@ -27,22 +27,29 @@ namespace vis {
 		int* uvPositionsIndexes;
 		int normalIndex;
 
-		Polygon(int pVerticesIndexes[], int pUvPositionsIndexes[], int pNormalIndex) {
-			verticesIndexes = pVerticesIndexes;
-			uvPositionsIndexes = pUvPositionsIndexes;
-			normalIndex = pNormalIndex;
-		}
+		Polygon(int* verticesIndexes = nullptr, int uvPositionsIndexes[] = nullptr, int normalIndex = -1)
+			: verticesIndexes(verticesIndexes),
+			uvPositionsIndexes(uvPositionsIndexes),
+			normalIndex(normalIndex) {}
 	};
 
 	class GameObject {
 	private:
-		Vector3 vertices;
+		Vector3* vertices;
 		Vector3* normals;
 		Vector3* uvCoordinates;
 
 		Polygon* polygons;
 
 		std::pair<int, Material>* materialsIndexes;
+
+	public:
+		GameObject(Vector3* vertices = nullptr, Vector3* normals = nullptr, Vector3* uvCoordinates = nullptr, Polygon* polygons = nullptr, std::pair<int, Material>* materialsIndexes = nullptr) :
+			vertices(vertices),
+			normals(normals),
+			uvCoordinates(uvCoordinates),
+			polygons(polygons),
+			materialsIndexes(materialsIndexes){}
 	};
 
 	class ObjectUtil {
@@ -157,7 +164,6 @@ namespace vis {
 
 						Polygon p = Polygon(vi, uvi, n);
 						polygons.push_back(p);
-						delete[] vi, uvi;
 					}
 					else if (strcmp(lec, "usemtl") == 0) {
 						char name[32];
@@ -175,15 +181,27 @@ namespace vis {
 			}
 
 			auto materialsIndexesArray = new std::pair<int, Material>[materialsIndexes.size()];
+			
+			auto verticesArray = new Vector3[vertices.size()],
+				uvCordinatesArray = new Vector3[uvCordinates.size()],
+				normalsArray = new Vector3[normals.size()];
+
+			auto polygonsArray = new Polygon[polygons.size()];
+
 			std::copy(materialsIndexes.begin(), materialsIndexes.end(), materialsIndexesArray);
+			std::copy(vertices.begin(), vertices.end(), verticesArray);
+			std::copy(uvCordinates.begin(), uvCordinates.end(), uvCordinatesArray);
+			std::copy(normals.begin(), normals.end(), normalsArray);
+			std::copy(polygons.begin(), polygons.end(), polygonsArray);
+
 
 			for (auto mm : materialsIndexes) {
 				std::cout << mm.first << "  " << mm.second.name << std::endl;
 			}
 
-			GameObject go = GameObject();
+			GameObject gameObject = GameObject(verticesArray, normalsArray, uvCordinatesArray, polygonsArray, materialsIndexesArray);
 
-			return go;
+			return gameObject;
 		}
 	};
 }
