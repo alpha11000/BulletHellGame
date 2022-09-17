@@ -1,9 +1,9 @@
 #pragma once
 
+#include <vector>
 #include <GL/glut.h>
 #include <iostream>
 #include <list>
-#include <vector>
 #include <string>
 #include <map>
 
@@ -21,14 +21,15 @@ namespace vis {
 
 		Vector3(GLfloat x = 0, GLfloat y = 0, GLfloat z = 0) 
 			: x(x), y(y), z(z) {}
+
 	};
 
 	struct Polygon {
-		int* verticesIndexes;
-		int* uvPositionsIndexes;
+		std::vector<int> verticesIndexes;
+		std::vector<int> uvPositionsIndexes;
 		int normalIndex;
 
-		Polygon(int* verticesIndexes = nullptr, int uvPositionsIndexes[] = nullptr, int normalIndex = -1)
+		Polygon(std::vector<int> verticesIndexes = std::vector<int>(), std::vector<int> uvPositionsIndexes = std::vector<int>(), int normalIndex = 0)
 			: verticesIndexes(verticesIndexes),
 			uvPositionsIndexes(uvPositionsIndexes),
 			normalIndex(normalIndex) {}
@@ -36,19 +37,18 @@ namespace vis {
 
 	class GameObject {
 	private:
-		Vector3* vertices;
-		Vector3* normals;
-		Vector3* uvCoordinates;
+		std::vector<Vector3> vertices;
+		std::vector<Vector3> normals;
+		std::vector<Vector3> uvCoordinates;
 
-		Polygon* polygons;
-
+		std::vector<Polygon> polygons;
 		std::vector<std::pair<int, Material>> materialsIndexes;
 
 	public:
-		GameObject(Vector3* vertices = nullptr,
-			Vector3* normals = nullptr,
-			Vector3* uvCoordinates = nullptr,
-			Polygon* polygons = nullptr,
+		GameObject(std::vector<Vector3> vertices = std::vector<Vector3>(),
+			std::vector<Vector3> normals = std::vector<Vector3>(),
+			std::vector<Vector3> uvCoordinates = std::vector<Vector3>(),
+			std::vector<Polygon> polygons = std::vector<Polygon>(),
 			std::vector<std::pair<int, Material>> materialsIndexes = std::vector< std::pair<int, vis::Material> >(1, std::make_pair(0, vis::Material()))) :
 			vertices(vertices),
 			normals(normals),
@@ -56,10 +56,10 @@ namespace vis {
 			polygons(polygons),
 			materialsIndexes(materialsIndexes) {}
 
-		Vector3* getVertices() { return vertices; }
-		Vector3* getNormals() { return normals; }
-		Vector3* getUvCordinates() { return uvCoordinates; }
-		Polygon* getPolygons() { return polygons; }
+		std::vector<Vector3> getVertices() { return vertices; }
+		std::vector<Vector3> getNormals() { return normals; }
+		std::vector<Vector3> getUvCordinates() { return uvCoordinates; }
+		std::vector<Polygon> getPolygons() { return polygons; }
 		std::vector<std::pair<int, Material>> getMaterialsIndexes() { return materialsIndexes; }
 	};
 
@@ -79,8 +79,8 @@ namespace vis {
 			auto err_mat = Material();
 			materials[err_mat.name] = err_mat;
 
-			std::list<Vector3> vertices, uvCordinates, normals;
-			std::list<Polygon> polygons;
+			std::vector<Vector3> vertices, uvCordinates, normals;
+			std::vector<Polygon> polygons;
 
 			if (mtl != NULL) {
 				char materialName[32];
@@ -126,7 +126,6 @@ namespace vis {
 					if (strcmp(lec, "#") == 0) {
 						char buffer[32];
 						fgets(buffer, 32, obj);
-						std::cout << buffer << std::endl;
 					}
 
 					else if (strcmp(lec, "v") == 0) {
@@ -149,7 +148,7 @@ namespace vis {
 
 					else if (strcmp(lec, "f") == 0) {
 						facesCount++;
-						std::list<int> verts, uvs;
+						std::vector<int> verts, uvs;
 
 						int v = 0,
 							uv = 0,
@@ -166,14 +165,8 @@ namespace vis {
 							verts.push_back(v);
 							uvs.push_back(uv);
 						}
-						
-						int* vi = new int[verts.size()];
-						int* uvi = new int[uvs.size()];
 
-						std::copy(verts.begin(), verts.end(), vi);
-						std::copy(uvs.begin(), uvs.end(), uvi);
-
-						Polygon p = Polygon(vi, uvi, n);
+						Polygon p = Polygon(verts, uvs, n);
 						polygons.push_back(p);
 					}
 					else if (strcmp(lec, "usemtl") == 0) {
@@ -190,23 +183,13 @@ namespace vis {
 					}
 				}
 			}
-			auto verticesArray = new Vector3[vertices.size()],
-				uvCordinatesArray = new Vector3[uvCordinates.size()],
-				normalsArray = new Vector3[normals.size()];
-
-			auto polygonsArray = new Polygon[polygons.size()];
-
-			std::copy(vertices.begin(), vertices.end(), verticesArray);
-			std::copy(uvCordinates.begin(), uvCordinates.end(), uvCordinatesArray);
-			std::copy(normals.begin(), normals.end(), normalsArray);
-			std::copy(polygons.begin(), polygons.end(), polygonsArray);
 
 
 			for (auto mm : materialsIndexes) {
-				std::cout << mm.first << "  " << mm.second.name << std::endl;
+				//std::cout << mm.first << "  " << mm.second.name << std::endl;
 			}
 
-			GameObject gameObject = GameObject(verticesArray, normalsArray, uvCordinatesArray, polygonsArray, materialsIndexes);
+			GameObject gameObject = GameObject(vertices, normals, uvCordinates, polygons, materialsIndexes);
 
 			return gameObject;
 		}

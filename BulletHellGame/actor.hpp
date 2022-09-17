@@ -1,14 +1,14 @@
 #pragma once
 
-#include "objectUtil.hpp"
+//#include "objectUtil.hpp"
 
-namespace vis {
+namespace ctrl {
 	class Actor {
 	private:
-		GameObject gameObject;
-		Vector3 pos, rot;
+		vis::GameObject gameObject;
+		vis::Vector3 pos, rot;
 	public:
-		Actor(GameObject gameObject = NULL, Vector3 position = NULL, Vector3 rotation = NULL):
+		Actor(vis::GameObject gameObject = vis::GameObject(), vis::Vector3 position = NULL, vis::Vector3 rotation = NULL) :
 			gameObject(gameObject),
 			pos(position),
 			rot(rotation) {}
@@ -23,8 +23,8 @@ namespace vis {
 			pos.z += tZ;
 		}
 
-		GameObject getGameObject() {return gameObject;}
-		Vector3 getPosition() { return pos; }
-		Vector3 getRotation() { return rot; }
+		vis::GameObject getGameObject() {return gameObject;}
+		vis::Vector3 getPosition() { return pos; }
+		vis::Vector3 getRotation() { return rot; }
 	};
 }
