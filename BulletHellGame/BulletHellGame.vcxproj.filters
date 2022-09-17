@@ -18,15 +18,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="objectUtil.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="objectUtil.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Header.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
