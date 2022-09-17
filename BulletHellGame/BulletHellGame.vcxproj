@@ -135,7 +135,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="object.hpp" />
+    <ClInclude Include="gameObject.hpp" />
     <ClInclude Include="objectUtil.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
