@@ -9,11 +9,13 @@ int main(int argc, char** argv) {
 	FILE* obj;
 	FILE* mtl = NULL;
 
-	fopen_s(&obj, "C:/Users/Cliente/source/repos/CG_23/porsche.obj", "r");
-	fopen_s(&mtl, "C:/Users/Cliente/source/repos/CG_23/porsche.mtl", "r");
+	fopen_s(&obj, "../res/porsche.obj", "r");
+	fopen_s(&mtl, "../res/porsche.mtl", "r");
 
 	visualization::ObjectUtil::loadObjModel(obj, mtl); 
 	 
+	std::cout << "Aqui";
+
 }
 
 #endif
