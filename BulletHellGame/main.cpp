@@ -1,9 +1,5 @@
-#pragma once
-#ifndef MAIN
-#define	MAIN
-
+#include "Header.h"
 #include "objectUtil.hpp"
-#include "gameObject.hpp"
 
 int main(int argc, char** argv) {
 	FILE* obj;
@@ -12,10 +8,7 @@ int main(int argc, char** argv) {
 	fopen_s(&obj, "../res/porsche.obj", "r");
 	fopen_s(&mtl, "../res/porsche.mtl", "r");
 
-	visualization::ObjectUtil::loadObjModel(obj, mtl); 
-	 
-	std::cout << "Aqui";
+	vis::ObjectUtil::loadObjModel(obj, mtl); 
+
 
 }
-
-#endif

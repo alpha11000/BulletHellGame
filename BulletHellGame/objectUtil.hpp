@@ -1,6 +1,4 @@
 #pragma once
-#ifndef OBJUTIL
-#define	OBJUTIL
 
 #include <GL/glut.h>
 #include <iostream>
@@ -8,34 +6,20 @@
 #include <string>
 #include <map>
 
-#include "gameObject.hpp"
-
-namespace visualization {
-
+namespace vis {
 	struct Material {
 		std::string name;
-		GLfloat r = 1, g = 1, b = 1, a = 1;
+		GLfloat r, g, b, a;
 
-		Material() {}
-
-		Material(GLfloat cR, GLfloat cG, GLfloat cB, GLfloat cA) {
-			r = cR;
-			g = cG;
-			b = cB;
-			a = cA;
-		}
+		Material(std::string name = "error", GLfloat r = 1, GLfloat g = 1, GLfloat b = 1, GLfloat a = 1)
+			: name(name), r(r), g(g), b(b), a(a) {}
 	};
 	
 	struct Vector3 {
-		GLfloat x = 0, y = 0, z = 0;
+		GLfloat x, y, z;
 
-		visualization::Vector3() {}
-
-		visualization::Vector3(GLfloat vX, GLfloat vY, GLfloat vZ) {
-			x = vX;
-			y = vY;
-			z = vZ;
-		}
+		Vector3(GLfloat x = 0, GLfloat y = 0, GLfloat z = 0) 
+			: x(x), y(y), z(z) {}
 	};
 
 	struct Polygon {
@@ -43,30 +27,42 @@ namespace visualization {
 		int* uvPositionsIndexes;
 		int normalIndex;
 
-		inline Polygon(int pVerticesIndexes[], int pUvPositionsIndexes[], int pNormalIndex) {
+		Polygon(int pVerticesIndexes[], int pUvPositionsIndexes[], int pNormalIndex) {
 			verticesIndexes = pVerticesIndexes;
 			uvPositionsIndexes = pUvPositionsIndexes;
 			normalIndex = pNormalIndex;
 		}
 	};
 
+	class GameObject {
+	private:
+		Vector3 vertices;
+		Vector3* normals;
+		Vector3* uvCoordinates;
+
+		Polygon* polygons;
+
+		std::pair<int, Material>* materialsIndexes;
+	};
+
 	class ObjectUtil {
 	public:
 		static Vector3 readVector3FromFile(FILE* file) {
-			Vector3* v3 = new Vector3();
-			fscanf_s(file, " %f %f %f", &v3->x, &v3->y, &v3->z);
+			Vector3 v3;
+			fscanf_s(file, " %f %f %f", &v3.x, &v3.y, &v3.z);
 
-			return *v3;
+			return v3;
 		}
 
 		static GameObject loadObjModel(FILE* obj, FILE* mtl) {
-
 			std::map<std::string, Material> materials;
 			std::list<std::pair<int, Material>> materialsIndexes;
 
+			auto err_mat = Material();
+			materials[err_mat.name] = err_mat;
+
 			std::list<Vector3> vertices, uvCordinates, normals;
 			std::list<Polygon> polygons;
-
 
 			if (mtl != NULL) {
 				char materialName[32];
@@ -85,9 +81,8 @@ namespace visualization {
 						float r, g, b;
 
 						int k = fscanf_s(mtl, "%f %f %f", &r, &g, &b);
-						Material* material = new Material(r, g, b, 1);
-						material->name = materialName;
-						materials[materialName] = *material;
+						Material material = Material(materialName, r, g, b, 1);
+						materials[materialName] = material;
 					}
 
 					if (strcmp(lec,"d") == 0) {
@@ -123,9 +118,9 @@ namespace visualization {
 					}
 
 					else if (strcmp(lec, "vt") == 0) {
-						Vector3* v = new Vector3();
-						fscanf_s(obj, " %f %f", &v->x, &v->y);
-						uvCordinates.push_back(*v);
+						Vector3 v = Vector3();
+						fscanf_s(obj, " %f %f", &v.x, &v.y);
+						uvCordinates.push_back(v);
 					}
 
 					else if (strcmp(lec, "vn") == 0) {
@@ -160,26 +155,21 @@ namespace visualization {
 						std::copy(verts.begin(), verts.end(), vi);
 						std::copy(uvs.begin(), uvs.end(), uvi);
 
-						Polygon* p = new Polygon(vi, uvi, n);
-						polygons.push_back(*p);
+						Polygon p = Polygon(vi, uvi, n);
+						polygons.push_back(p);
+						delete[] vi, uvi;
 					}
 					else if (strcmp(lec, "usemtl") == 0) {
-
 						char name[32];
 						fscanf_s(obj, "%s", name, 32);
 
-						Material* mat = new Material(1, 1, 1, 1);
+						Material mat = err_mat;
 
-						if (materials.count((std::string)name)) {
-							*mat = materials[(std::string)name];
-						}
-
-						mat->name = name;
-						auto pr = new std::pair<int, Material>;
-						pr->first = facesCount;
-						pr->second = *mat;
-
-						materialsIndexes.push_back(*pr);
+						if (materials.count(name))
+							mat = materials[name];
+						
+						
+						materialsIndexes.push_back(std::make_pair(facesCount, mat));
 					}
 				}
 			}
@@ -192,9 +182,8 @@ namespace visualization {
 			}
 
 			GameObject go = GameObject();
+
 			return go;
 		}
 	};
 }
-
-#endif
