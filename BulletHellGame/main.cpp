@@ -85,7 +85,7 @@ void render() {
 
 	glPushMatrix();
 	glColor3f(1, 0, 0);
-	glTranslated(0, 30, 50);
+	glTranslated(0, 0, 20);
 	glutSolidCube(10);
 	glPopMatrix();
 
@@ -149,6 +149,10 @@ void initLights() {
 	// Habilita a luz de número 0
 	glEnable(GL_LIGHT0);
 	// Habilita o depth-buffering
+	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void initGLUT(const char* nome, int argc, char** argv) {
@@ -174,8 +178,6 @@ void initGLUT(const char* nome, int argc, char** argv) {
 	//glutMouseFunc(mouseButton);
 	//glutPassiveMotionFunc(mouseMove);
 	//glutMotionFunc(pressedMouseMove);
-
-	glEnable(GL_DEPTH_TEST);
 	initLights();
 }
 
