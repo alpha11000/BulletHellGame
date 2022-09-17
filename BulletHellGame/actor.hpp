@@ -6,26 +6,21 @@ namespace vis {
 	class Actor {
 	private:
 		GameObject gameObject;
-		float tX, tY, tZ,
-			rX, rY, rZ;
+		Vector3 pos, rot;
 	public:
-		Actor(GameObject gameObject = NULL, float tX = 0, float tY = 0, float tZ = 0, float rX = 0, float rY = 0, float rZ = 0):
+		Actor(GameObject gameObject = NULL, Vector3 position = NULL, Vector3 rotation = NULL):
 			gameObject(gameObject),
-			tX(tX),
-			tY(tY),
-			tZ(tZ),
-			rX(rX),
-			rY(rY),
-			rZ(rZ) {}
+			pos(position),
+			rot(rotation) {}
 
 		void draw() {
-			//render.draw(this);
+			//render.drawObject(this);
 		}
 
 		void translate(float tX, float tY, float tZ) {
-			this->tX += tX;
-			this->tY += tY;
-			this->tZ += tZ;
+			pos.x += tX;
+			pos.y += tY;
+			pos.z += tZ;
 		}
 	};
 }
