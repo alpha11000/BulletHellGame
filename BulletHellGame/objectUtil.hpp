@@ -45,14 +45,14 @@ namespace vis {
 		std::vector<Vector3> uvCoordinates;
 
 		std::vector<Polygon> polygons;
-		std::vector<std::pair<int, Material>> materialsIndexes;
+		std::vector<std::pair<int, std::string>> materialsIndexes;
 
 	public:
 		GameObject(std::vector<Vector3> vertices = std::vector<Vector3>(),
 			std::vector<Vector3> normals = std::vector<Vector3>(),
 			std::vector<Vector3> uvCoordinates = std::vector<Vector3>(),
 			std::vector<Polygon> polygons = std::vector<Polygon>(),
-			std::vector<std::pair<int, Material>> materialsIndexes = std::vector< std::pair<int, vis::Material> >(1, std::make_pair(0, vis::Material()))) :
+			std::vector<std::pair<int, std::string>> materialsIndexes = std::vector<std::pair<int, std::string> >(1, std::make_pair(0, std::string()))) :
 			vertices(vertices),
 			normals(normals),
 			uvCoordinates(uvCoordinates),
@@ -63,7 +63,7 @@ namespace vis {
 		std::vector<Vector3> getNormals() { return normals; }
 		std::vector<Vector3> getUvCordinates() { return uvCoordinates; }
 		std::vector<Polygon> getPolygons() { return polygons; }
-		std::vector<std::pair<int, Material>> getMaterialsIndexes() { return materialsIndexes; }
+		std::vector<std::pair<int, std::string>> getMaterialsIndexes() { return materialsIndexes; }
 	};
 
 	class ObjectUtil {
@@ -75,30 +75,23 @@ namespace vis {
 			return v3;
 		}
 
-		static GameObject loadObjModel(FILE* obj, FILE* mtl) {
+		static std::map<std::string, Material> loadMtl(FILE* mtl) {
 			std::map<std::string, Material> materials;
-			std::vector<std::pair<int, Material>> materialsIndexes;
-
-			auto err_mat = Material();
-			materials[err_mat.name] = err_mat;
-
-			std::vector<Vector3> vertices, uvCordinates, normals;
-			std::vector<Polygon> polygons;
 
 			if (mtl != NULL) {
 				char materialName[32];
-				
+
 				while (true) {
 					char lec[64];
 					int s = fscanf_s(mtl, "%s", lec, 64);
-					
+
 					if (s == EOF) break;
 
 					if (strcmp(lec, "newmtl") == 0) {
 						fscanf_s(mtl, "%s", &materialName, 32);
 					}
 
-					if (strcmp(lec,"Kd") == 0) {
+					if (strcmp(lec, "Kd") == 0) {
 						float r, g, b;
 
 						int k = fscanf_s(mtl, "%f %f %f", &r, &g, &b);
@@ -106,16 +99,26 @@ namespace vis {
 						materials[materialName] = material;
 					}
 
-					if (strcmp(lec,"d") == 0) {
+					if (strcmp(lec, "d") == 0) {
 						float a;
 
 						int k = fscanf_s(mtl, "%f", &a);
 
-						if(materials.count((std::string)materialName))
+						if (materials.count((std::string)materialName))
 							materials[(std::string)materialName].a = a;
 					}
 				}
 			}
+
+			return materials;
+		}
+
+		static GameObject loadObjModel(FILE* obj) {
+
+			std::vector<std::pair<int, std::string>> materialsIndexes;
+
+			std::vector<Vector3> vertices, uvCordinates, normals;
+			std::vector<Polygon> polygons;
 
 			int facesCount = 0;
 
@@ -176,13 +179,7 @@ namespace vis {
 						char name[32];
 						fscanf_s(obj, "%s", name, 32);
 
-						Material mat = err_mat;
-
-						if (materials.count(name))
-							mat = materials[name];
-						
-						
-						materialsIndexes.push_back(std::make_pair(facesCount, mat));
+						materialsIndexes.push_back(std::make_pair(facesCount, name));
 					}
 				}
 			}

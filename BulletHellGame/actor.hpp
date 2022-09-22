@@ -1,17 +1,20 @@
 #pragma once
 
-//#include "objectUtil.hpp"
-
 namespace ctrl {
 	class Actor {
 	private:
 		vis::GameObject gameObject;
+		std::map<std::string, vis::Material> materials;
 		vis::Vector3 pos, rot;
 	public:
 		Actor(vis::GameObject gameObject = vis::GameObject(), vis::Vector3 position = vis::Vector3(0, 0, 0), vis::Vector3 rotation = vis::Vector3(0, 0, 0)) :
 			gameObject(gameObject),
 			pos(position),
 			rot(rotation) {}
+
+		void setMatrials(std::map<std::string, vis::Material> materials) {
+			this->materials = materials;
+		}
 
 		void draw() {
 			//render.drawObject(this);
@@ -30,6 +33,7 @@ namespace ctrl {
 		}
 
 		vis::GameObject getGameObject() {return gameObject;}
+		std::map<std::string, vis::Material> getMaterials() { return materials; }
 		vis::Vector3 getPosition() { return pos; }
 		vis::Vector3 getRotation() { return rot; }
 	};
