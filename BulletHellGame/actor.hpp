@@ -8,7 +8,7 @@ namespace ctrl {
 		vis::GameObject gameObject;
 		vis::Vector3 pos, rot;
 	public:
-		Actor(vis::GameObject gameObject = vis::GameObject(), vis::Vector3 position = NULL, vis::Vector3 rotation = NULL) :
+		Actor(vis::GameObject gameObject = vis::GameObject(), vis::Vector3 position = vis::Vector3(0, 0, 0), vis::Vector3 rotation = vis::Vector3(0, 0, 0)) :
 			gameObject(gameObject),
 			pos(position),
 			rot(rotation) {}
@@ -18,9 +18,15 @@ namespace ctrl {
 		}
 
 		void translate(float tX, float tY, float tZ) {
-			pos.x += tX;
-			pos.y += tY;
-			pos.z += tZ;
+			pos.v[0] += tX;
+			pos.v[1] += tY;
+			pos.v[2] += tZ;
+		}
+
+		void rotate(float rX, float rY, float rZ) {
+			rot.v[0] += rX;
+			rot.v[1] += rY;
+			rot.v[2] += rZ;
 		}
 
 		vis::GameObject getGameObject() {return gameObject;}

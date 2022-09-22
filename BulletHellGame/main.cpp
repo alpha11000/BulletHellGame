@@ -3,7 +3,9 @@
 #include "actor.hpp"
 
 int ms = 1000 / 30;
-ctrl::Actor actor;
+ctrl::Actor actor1;
+ctrl::Actor actor2;
+ctrl::Actor actor3;
 
 void setColor(vis::Material material) {
 	glColor4f(material.r, material.g, material.b, material.a);
@@ -40,8 +42,8 @@ void drawActor(ctrl::Actor actor) {
 	}
 
 	glPushMatrix();
-	glTranslatef(0, 0, -50);
-	glRotatef(actor.getPosition().z, 0, 1, 0);
+	glRotatef(rot.v[1], 0, 1, 0);
+	glTranslatef(pos.v[0], pos.v[1], pos.v[2]);
 
 	setColor(mat);
 
@@ -63,11 +65,11 @@ void drawActor(ctrl::Actor actor) {
 
 		if (normals.size() > p.normalIndex - 1) {
 			vis::Vector3 normal = normals[p.normalIndex - 1];
-			glNormal3f(normal.x, normal.y, normal.z);
+			glNormal3f(normal.v[0], normal.v[1], normal.v[2]);
 		}
 
 		for (int i : p.verticesIndexes) {
-			glVertex3f(vertices[i - 1].x, vertices[i - 1].y, vertices[i - 1].z);
+			glVertex3fv(vertices[i - 1].v);
 		}
 
 		glEnd();
@@ -81,12 +83,14 @@ void render() {
 	glLoadIdentity();
 
 	glColor3f(1, 1, 1);
-	drawActor(actor); 
+	drawActor(actor1); 
+	drawActor(actor2); 
+	//drawActor(actor3); 
 
 	glPushMatrix();
 	glColor3f(1, 0, 0);
 	glTranslated(0, 0, 20);
-	glutSolidCube(10);
+	//glutSolidCube(10);
 	glPopMatrix();
 
 	glutSwapBuffers();
@@ -108,7 +112,9 @@ void reshape(int w, int h) {
 }
 
 void update(int val) {
-	actor.translate(0, 0, 4);
+	actor1.rotate(0, 4, 0);
+	actor2.rotate(0, -4, 0);
+	actor3.translate(0, 0, -2);
 	glutPostRedisplay();
 	glutTimerFunc(ms, update, 0);
 }
@@ -125,7 +131,7 @@ void initLights() {
 
 	// Habilita o modelo de tonalização de Gouraud
 	glShadeModel(GL_SMOOTH);
-	// glShadeModel(GL_FLAT);
+	//glShadeModel(GL_FLAT);
 
 	// Define a refletância do material
 	glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade);
@@ -184,12 +190,24 @@ void initGLUT(const char* nome, int argc, char** argv) {
 int main(int argc, char** argv) {
 	FILE* obj = nullptr;
 	FILE* mtl = nullptr;
+	FILE* objav = nullptr;
+	FILE* mtlav = nullptr;
 
+	fopen_s(&objav, "../res/av.obj", "r");
+	fopen_s(&mtlav, "../res/av.mtl", "r");
 	fopen_s(&obj, "../res/porsche.obj", "r");
 	fopen_s(&mtl, "../res/porsche.mtl", "r");
 
 	vis::GameObject gameObject = vis::ObjectUtil::loadObjModel(obj, mtl);
-	actor = ctrl::Actor(gameObject);
+	actor1 = ctrl::Actor(gameObject);
+
+	vis::GameObject gameObject2 = vis::ObjectUtil::loadObjModel(objav, mtlav);
+	actor2 = ctrl::Actor(gameObject2);
+	actor3 = ctrl::Actor(gameObject);
+
+	actor1.translate(0, 0, -20);
+	actor2.translate(0, 30, 20);
+	actor3.translate(0, 0, 40);
 
 	initGLUT("BulletHell S/N", argc, argv);
 	glutMainLoop();

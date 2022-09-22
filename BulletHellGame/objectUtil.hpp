@@ -17,10 +17,13 @@ namespace vis {
 	};
 	
 	struct Vector3 {
-		GLfloat x, y, z;
+		GLfloat v[3];
 
-		Vector3(GLfloat x = 0, GLfloat y = 0, GLfloat z = 0) 
-			: x(x), y(y), z(z) {}
+		Vector3(GLfloat x = 0, GLfloat y = 0, GLfloat z = 0) {
+			v[0] = x;
+			v[1] = y;
+			v[2] = z;
+		}
 
 	};
 
@@ -67,7 +70,7 @@ namespace vis {
 	public:
 		static Vector3 readVector3FromFile(FILE* file) {
 			Vector3 v3;
-			fscanf_s(file, " %f %f %f", &v3.x, &v3.y, &v3.z);
+			fscanf_s(file, " %f %f %f", &v3.v[0], &v3.v[1], &v3.v[2]);
 
 			return v3;
 		}
@@ -136,7 +139,7 @@ namespace vis {
 
 					else if (strcmp(lec, "vt") == 0) {
 						Vector3 v = Vector3();
-						fscanf_s(obj, " %f %f", &v.x, &v.y);
+						fscanf_s(obj, " %f %f", &v.v[0], &v.v[1]);
 						uvCordinates.push_back(v);
 					}
 
@@ -182,11 +185,6 @@ namespace vis {
 						materialsIndexes.push_back(std::make_pair(facesCount, mat));
 					}
 				}
-			}
-
-
-			for (auto mm : materialsIndexes) {
-				//std::cout << mm.first << "  " << mm.second.name << std::endl;
 			}
 
 			GameObject gameObject = GameObject(vertices, normals, uvCordinates, polygons, materialsIndexes);
