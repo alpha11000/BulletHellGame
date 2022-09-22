@@ -12,8 +12,8 @@ namespace ctrl {
 			pos(position),
 			rot(rotation) {}
 
-		void setMatrials(std::map<std::string, vis::Material> materials) {
-			this->materials = materials;
+		void setMatrials(vis::MTL materials) {
+			this->materials = materials.mtlMaterials;
 		}
 
 		void draw() {

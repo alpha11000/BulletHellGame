@@ -27,6 +27,14 @@ namespace vis {
 
 	};
 
+	struct MTL {
+		std::map<std::string, Material> mtlMaterials;
+
+		MTL(std::map<std::string, Material> mtlMaterials) {
+			this->mtlMaterials = mtlMaterials;
+		}
+	};
+
 	struct Polygon {
 		std::vector<int> verticesIndexes;
 		std::vector<int> uvPositionsIndexes;
@@ -75,7 +83,7 @@ namespace vis {
 			return v3;
 		}
 
-		static std::map<std::string, Material> loadMtl(FILE* mtl) {
+		static MTL loadMtl(FILE* mtl) {
 			std::map<std::string, Material> materials;
 
 			if (mtl != NULL) {
@@ -110,7 +118,7 @@ namespace vis {
 				}
 			}
 
-			return materials;
+			return MTL(materials);
 		}
 
 		static GameObject loadObjModel(FILE* obj) {

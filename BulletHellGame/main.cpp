@@ -1,13 +1,14 @@
 #include "GL/freeglut.h"
 #include "objectUtil.hpp"
 #include "actor.hpp"
+#include "AssetsManager.hpp"
 
-int ms = 1000 / 3;
+int ms = 1000 / 60;
 ctrl::Actor actor1;
 //ctrl::Actor actor2;
 //ctrl::Actor actor3;
 
-std::vector<std::map<std::string, vis::Material>> mtlMaterials;
+std::vector<vis::MTL> mtlMaterials;
 int index = 0;
 
 void setColor(vis::Material material) {
@@ -39,11 +40,13 @@ void drawActor(ctrl::Actor actor) {
 	int mi = 0;
 	int nextMatIndex = 0;
 
-	if (materialIndexes.size() > 0) {
-		mat = materialIndexes[0].second;
-	}
+	std::string matName;
 
-	if (materialIndexes.size() >= 1) {
+	if (materialIndexes.size() > 0) {
+		matName = materialIndexes[0].second;
+
+		mat = ((materials.count(matName))) ? materials[matName] : errorMaterial;
+
 		nextMatIndex = materialIndexes[1].first;
 	}
 
@@ -60,12 +63,7 @@ void drawActor(ctrl::Actor actor) {
 			if (mi < materialIndexes.size()) {
 				std::string matName = materialIndexes[mi++].second;
 
-				if (materials.count(matName)) {
-					mat = materials[matName];
-				}
-				else {
-					mat = errorMaterial;
-				}
+				mat = ((materials.count(matName))) ? materials[matName] : errorMaterial;
 
 				setColor(mat);
 			}
@@ -126,7 +124,7 @@ void reshape(int w, int h) {
 }
 
 void update(int val) {
-	actor1.setMatrials(mtlMaterials[index++ % mtlMaterials.size()]);
+	actor1.setMatrials(mtlMaterials[index++ % mtlMaterials.size()].mtlMaterials);
 	actor1.rotate(0, 4, 0);
 	//actor2.rotate(0, -4, 0);
 	//actor3.translate(0, 0, -2);
@@ -203,39 +201,11 @@ void initGLUT(const char* nome, int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-	FILE* obj = nullptr;
-	FILE* mtl = nullptr;
-	FILE* mtl2 = nullptr;
-	FILE* mtl3 = nullptr;
-	FILE* objav = nullptr;
-	FILE* mtlav = nullptr;
 
-	fopen_s(&objav, "../res/av.obj", "r");
-	fopen_s(&mtlav, "../res/av.mtl", "r");
-	fopen_s(&obj, "../res/porsche.obj", "r");
-	fopen_s(&mtl, "../res/porsche.mtl", "r");
-	fopen_s(&mtl2, "../res/porsche2.mtl", "r");
-	fopen_s(&mtl3, "../res/porsche3.mtl", "r");
+	auto enemies = vis::AssetsManager::getInstance().getEnemies();
 
-	vis::GameObject gameObject = vis::ObjectUtil::loadObjModel(obj);
-	std::map<std::string, vis::Material> materials = vis::ObjectUtil::loadMtl(mtl);
-	std::map<std::string, vis::Material> materials2 = vis::ObjectUtil::loadMtl(mtl2);
-	std::map<std::string, vis::Material> materials3 = vis::ObjectUtil::loadMtl(mtl3);
-
-	mtlMaterials.push_back(materials);
-	mtlMaterials.push_back(materials2);
-	mtlMaterials.push_back(materials3);
-
-	actor1 = ctrl::Actor(gameObject);
-	actor1.setMatrials(materials);
-
-	//vis::GameObject gameObject2 = vis::ObjectUtil::loadObjModel(objav, mtlav);
-	//actor2 = ctrl::Actor(gameObject2);
-	//actor3 = ctrl::Actor(gameObject);
-
-	actor1.translate(0, 0, -20);
-	//actor2.translate(0, 30, 20);
-	//actor3.translate(0, 0, 40);
+	actor1 = ctrl::Actor(enemies[0].first);
+	mtlMaterials = enemies[0].second;
 
 	initGLUT("BulletHell S/N", argc, argv);
 	glutMainLoop();
