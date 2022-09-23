@@ -16,6 +16,10 @@ namespace ctrl {
 			this->materials = materials.mtlMaterials;
 		}
 
+		void onUpdate() {
+			rotate(0, 4, 0);
+		}
+
 		void draw() {
 			//render.drawObject(this);
 		}

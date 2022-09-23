@@ -3,16 +3,21 @@
 #include "actor.hpp"
 #include "AssetsManager.hpp"
 
-int ms = 1000 / 60;
+int num = 0;/////
+
+int ms = 1000 / 30;
 ctrl::Actor actor1;
-//ctrl::Actor actor2;
-//ctrl::Actor actor3;
 
 std::vector<vis::MTL> mtlMaterials;
 int index = 0;
 
 void setColor(vis::Material material) {
-	glColor4f(material.r, material.g, material.b, material.a);
+	glColor4fv(material.difuse);
+
+	// Define a refletância do material
+	glMaterialfv(GL_FRONT, GL_SPECULAR, material.specular);
+	// Define a concentração do brilho
+	glMateriali(GL_FRONT, GL_SHININESS, material.brightness);
 }
 
 void drawActor(ctrl::Actor actor) {
@@ -83,7 +88,6 @@ void drawActor(ctrl::Actor actor) {
 		for (int i : p.verticesIndexes) {
 			glVertex3fv(vertices[i - 1].v);
 		}
-
 		glEnd();
 	}
 	glPopMatrix();
@@ -96,14 +100,6 @@ void render() {
 
 	glColor3f(1, 1, 1);
 	drawActor(actor1); 
-	//drawActor(actor2); 
-	//drawActor(actor3); 
-
-	glPushMatrix();
-	glColor3f(1, 0, 0);
-	glTranslated(0, 0, 20);
-	//glutSolidCube(10);
-	glPopMatrix();
 
 	glutSwapBuffers();
 }
@@ -124,10 +120,11 @@ void reshape(int w, int h) {
 }
 
 void update(int val) {
-	actor1.setMatrials(mtlMaterials[index++ % mtlMaterials.size()].mtlMaterials);
-	actor1.rotate(0, 4, 0);
-	//actor2.rotate(0, -4, 0);
-	//actor3.translate(0, 0, -2);
+	num++;
+	if (num % 90 == 0) {
+		actor1.setMatrials(mtlMaterials[index++ % mtlMaterials.size()].mtlMaterials);
+	}
+	actor1.onUpdate();
 	glutPostRedisplay();
 	glutTimerFunc(ms, update, 0);
 }
@@ -206,7 +203,7 @@ int main(int argc, char** argv) {
 
 	actor1 = ctrl::Actor(enemies[0].first);
 	mtlMaterials = enemies[0].second;
-
+	actor1.setMatrials(enemies[0].second[0]);
 	initGLUT("BulletHell S/N", argc, argv);
 	glutMainLoop();
 

@@ -10,10 +10,23 @@
 namespace vis {
 	struct Material {
 		std::string name;
-		GLfloat r, g, b, a;
+		GLfloat difuse[4];
+		GLfloat specular[4];
+		GLfloat brightness = 0;
 
-		Material(std::string name = "error", GLfloat r = 1, GLfloat g = 1, GLfloat b = 1, GLfloat a = 1)
-			: name(name), r(r), g(g), b(b), a(a) {}
+		Material(std::string name = "error", GLfloat r = 1, GLfloat g = 1, GLfloat b = 1, GLfloat a = 1){
+			difuse[0] = r;
+			difuse[1] = g;
+			difuse[2] = b;
+			difuse[3] = a;
+		}
+
+		void setSpecular(GLfloat r, GLfloat g, GLfloat b) {
+			specular[0] = r;
+			specular[1] = g;
+			specular[2] = b;
+		}
+
 	};
 	
 	struct Vector3 {
@@ -107,13 +120,31 @@ namespace vis {
 						materials[materialName] = material;
 					}
 
+					if (strcmp(lec, "Ks") == 0) {
+						float r, g, b;
+
+						int k = fscanf_s(mtl, "%f %f %f", &r, &g, &b);
+
+						if (materials.count((std::string)materialName))
+							materials[(std::string)materialName].setSpecular(r, g, b);
+					}
+
 					if (strcmp(lec, "d") == 0) {
 						float a;
 
 						int k = fscanf_s(mtl, "%f", &a);
 
 						if (materials.count((std::string)materialName))
-							materials[(std::string)materialName].a = a;
+							materials[(std::string)materialName].difuse[3] = a;
+					}
+
+					if (strcmp(lec, "Ns") == 0) {
+						float b;
+
+						int k = fscanf_s(mtl, "%f", &b);
+
+						if (materials.count((std::string)materialName))
+							materials[(std::string)materialName].brightness = b;
 					}
 				}
 			}
