@@ -3,6 +3,8 @@
 namespace ctrl {
 	class Actor {
 	private:
+		bool actived = true;
+
 		vis::GameObject gameObject;
 		std::map<std::string, vis::Material> materials;
 		vis::Vector3 pos, rot;
@@ -17,11 +19,18 @@ namespace ctrl {
 		}
 
 		void onUpdate() {
-			rotate(0, 4, 0);
+			translate(0, 0, -5);
+			if (pos.v[2] < -100) {
+				actived = false;
+			}
 		}
 
 		void draw() {
 			//render.drawObject(this);
+		}
+
+		bool isActived() {
+			return actived;
 		}
 
 		void translate(float tX, float tY, float tZ) {

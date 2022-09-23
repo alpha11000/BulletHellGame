@@ -1,12 +1,21 @@
+#include <set>
+
 #include "GL/freeglut.h"
 #include "objectUtil.hpp"
 #include "actor.hpp"
 #include "AssetsManager.hpp"
+#include "randomUtil.hpp"
+
+int levels = 100;
+int level = 0;
+int enemies = 5;
 
 int num = 0;/////
 
 int ms = 1000 / 30;
 ctrl::Actor actor1;
+
+std::map<int, ctrl::Actor> actors;
 
 std::vector<vis::MTL> mtlMaterials;
 int index = 0;
@@ -99,7 +108,11 @@ void render() {
 	glLoadIdentity();
 
 	glColor3f(1, 1, 1);
-	drawActor(actor1); 
+	
+	for (auto a : actors) {
+		if (!a.second.isActived()) continue;
+		drawActor(a.second);
+	}
 
 	glutSwapBuffers();
 }
@@ -121,10 +134,39 @@ void reshape(int w, int h) {
 
 void update(int val) {
 	num++;
-	if (num % 90 == 0) {
-		actor1.setMatrials(mtlMaterials[index++ % mtlMaterials.size()].mtlMaterials);
+
+	if (num % 15 == 0) {
+		printf("entrering\n");
+		int r1 = lgc::RandomUtil::getRandomIndex(levels, level, vis::AssetsManager::getInstance().getEnemiessCount());
+		
+		auto enemie = vis::AssetsManager::getInstance().getEnemie(r1);
+
+		ctrl::Actor act = ctrl::Actor(enemie.first);
+
+		int r2 = lgc::RandomUtil::getRandomIndex(levels, level, enemie.second.size());
+
+		act.setMatrials(enemie.second[r2]);
+
+		actors.insert(std::make_pair(actors.size(), act));
+		level++;
+
+		printf("ok\n");
 	}
-	actor1.onUpdate();
+
+	std::set<int> disableds;
+
+	for (std::pair<int, ctrl::Actor> kv : actors) {
+		int k = kv.first;
+
+		actors[k].onUpdate();
+
+		if (!actors[k].isActived()) disableds.insert(k);
+	}
+
+	for (int i : disableds) {
+		actors.erase(i);
+	}
+
 	glutPostRedisplay();
 	glutTimerFunc(ms, update, 0);
 }
@@ -199,11 +241,14 @@ void initGLUT(const char* nome, int argc, char** argv) {
 
 int main(int argc, char** argv) {
 
+	num = 90;
 	auto enemies = vis::AssetsManager::getInstance().getEnemies();
 
-	actor1 = ctrl::Actor(enemies[0].first);
-	mtlMaterials = enemies[0].second;
-	actor1.setMatrials(enemies[0].second[0]);
+	actor1 = ctrl::Actor(enemies[1].first);
+	mtlMaterials = enemies[1].second;
+	actor1.setMatrials(enemies[1].second[0]);
+	actor1.rotate(0, 0, 0);
+	
 	initGLUT("BulletHell S/N", argc, argv);
 	glutMainLoop();
 

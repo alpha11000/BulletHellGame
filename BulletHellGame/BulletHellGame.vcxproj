@@ -140,6 +140,7 @@
     <ClInclude Include="actor.hpp" />
     <ClInclude Include="AssetsManager.hpp" />
     <ClInclude Include="objectUtil.hpp" />
+    <ClInclude Include="randomUtil.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

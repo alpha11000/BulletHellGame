@@ -35,5 +35,8 @@
     <ClInclude Include="AssetsManager.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="randomUtil.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

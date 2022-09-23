@@ -51,6 +51,12 @@ namespace vis {
 			return enemies;
 		}
 
+		auto getEnemie(int index) { return enemies[index]; }
+
+		int getEnemiessCount() { return enemies.size(); }
+
+		int getEnemieMaterialCount(int index) { return enemies[index].second.size(); }
+
 		static AssetsManager& getInstance() {
 			static AssetsManager instance = AssetsManager();
 			return instance;
