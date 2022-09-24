@@ -1,5 +1,9 @@
 #pragma once
 
+#include "objectUtil.hpp"
+#include <string>
+#include <vector>
+
 namespace vis {
 	class AssetsManager {
 	private:
@@ -12,8 +16,8 @@ namespace vis {
 		}
 
 		void loadModels() {
-			loadModel("porsche");
-			loadModel("av");
+			loadModel("av1");
+			loadModel("av2");
 		}
 
 		void loadModel(std::string baseName) {

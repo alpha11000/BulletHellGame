@@ -10,7 +10,7 @@ int levels = 100;
 int level = 0;
 int enemies = 5;
 
-int num = 0;/////
+int num = 0;
 
 int ms = 1000 / 30;
 ctrl::Actor actor1;
@@ -107,27 +107,39 @@ void render() {
 	glClearColor(0.2f, 0.4f, 0.6f, 1.0f);
 	glLoadIdentity();
 
+	glPushMatrix();
 	glColor3f(1, 1, 1);
-	
+	//glutSolidSphere(3, 100, 100);
 	for (auto a : actors) {
 		if (!a.second.isActived()) continue;
 		drawActor(a.second);
 	}
+	glPushMatrix();
 
 	glutSwapBuffers();
 }
 
+double pi = std::acos(-1);
 void reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(45.0, w / (double)h, 1.0, 200);
-	gluLookAt(
-		45, 45, 100,
-		0, 0, 0,
-		0, 1, 0
-	);
+	float fov = 90.f;
+	float zs = 50.f;
+	float camy = 20.f;
+
+	float raio = std::sqrt((zs * zs) + (camy * camy));
+	float a = (std::acos(zs / raio) * 180 / pi);
+
+	float total_angle = camy < 0 ? a + fov / 2 : -(a + fov / 2);
+	
+	gluPerspective(fov, w / (double)h, 1.0, 1000);
+
+	glRotatef(0, 0.0, 0.0, 1.0);	// x
+	glRotatef(180, 0.0, 1.0, 0.0);  // y
+	glRotatef(total_angle, 1.0, 0.0, 0.0);	// z
+	glTranslated(0, - camy, 0);
 
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -146,6 +158,7 @@ void update(int val) {
 		int r2 = lgc::RandomUtil::getRandomIndex(levels, level, enemie.second.size());
 
 		act.setMatrials(enemie.second[r2]);
+		act.translate(0, 0, 50);
 
 		actors.insert(std::make_pair(actors.size(), act));
 		level++;
@@ -243,11 +256,6 @@ int main(int argc, char** argv) {
 
 	num = 90;
 	auto enemies = vis::AssetsManager::getInstance().getEnemies();
-
-	actor1 = ctrl::Actor(enemies[1].first);
-	mtlMaterials = enemies[1].second;
-	actor1.setMatrials(enemies[1].second[0]);
-	actor1.rotate(0, 0, 0);
 	
 	initGLUT("BulletHell S/N", argc, argv);
 	glutMainLoop();

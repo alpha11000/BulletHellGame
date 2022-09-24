@@ -134,11 +134,13 @@
   <ItemGroup>
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="math.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.hpp" />
     <ClInclude Include="AssetsManager.hpp" />
+    <ClInclude Include="math.hpp" />
     <ClInclude Include="objectUtil.hpp" />
     <ClInclude Include="randomUtil.hpp" />
   </ItemGroup>

@@ -19,7 +19,7 @@ namespace ctrl {
 		}
 
 		void onUpdate() {
-			translate(0, 0, -5);
+			translate(0, 0, -1);
 			if (pos.v[2] < -100) {
 				actived = false;
 			}

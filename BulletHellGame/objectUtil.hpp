@@ -6,8 +6,11 @@
 #include <list>
 #include <string>
 #include <map>
+#include "math.hpp"
 
 namespace vis {
+	using namespace math;
+
 	struct Material {
 		std::string name;
 		GLfloat difuse[4];
@@ -25,17 +28,6 @@ namespace vis {
 			specular[0] = r;
 			specular[1] = g;
 			specular[2] = b;
-		}
-
-	};
-	
-	struct Vector3 {
-		GLfloat v[3];
-
-		Vector3(GLfloat x = 0, GLfloat y = 0, GLfloat z = 0) {
-			v[0] = x;
-			v[1] = y;
-			v[2] = z;
 		}
 
 	};
