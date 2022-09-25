@@ -60,9 +60,12 @@ void Logic::onKeysUpdate() {
 	if (Controller::getInstance().specialIsPressed(102)) {
 		player.translate(5, 0, 0);
 	}
-
-	if (Controller::getInstance().specialIsPressed(100)) {
+	else if (Controller::getInstance().specialIsPressed(100)) {
 		player.translate(-5, 0, 0);
+	}
+
+	if (Controller::getInstance().isPressed(' ')) {
+		printf("ATIRA IRMAO\n");
 	}
 }
 

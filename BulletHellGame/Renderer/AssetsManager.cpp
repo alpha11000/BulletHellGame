@@ -35,6 +35,15 @@ void vis::AssetsManager::loadModel(std::string baseName, ModelType modelType) {
 	case ENEMY:
 		enemies.push_back(std::make_pair(obj, mtls));
 		break;
+	case BOOST:
+		boosts.push_back(std::make_pair(obj, mtls));
+		break;
+	case ENVIROMENT:
+		enviroment.push_back(std::make_pair(obj, mtls));
+		break;
+	case BULLET:
+		bullets.push_back(std::make_pair(obj, mtls));
+		break;
 	default:
 		break;
 	}
