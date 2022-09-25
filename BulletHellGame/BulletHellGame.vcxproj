@@ -80,6 +80,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,6 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,6 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,6 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,17 +136,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="game.cpp" />
+    <ClCompile Include="Logic\actor.cpp" />
+    <ClCompile Include="Logic\logic.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="math.cpp" />
-    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="Util\math.cpp" />
+    <ClCompile Include="Renderer\renderer.cpp" />
+    <ClCompile Include="Renderer\model.cpp" />
+    <ClCompile Include="Renderer\AssetsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="actor.hpp" />
-    <ClInclude Include="AssetsManager.hpp" />
-    <ClInclude Include="math.hpp" />
-    <ClInclude Include="objectUtil.hpp" />
-    <ClInclude Include="randomUtil.hpp" />
+    <ClInclude Include="Logic\actor.hpp" />
+    <ClInclude Include="Logic\logic.hpp" />
+    <ClInclude Include="Util\math.hpp" />
+    <ClInclude Include="Util\random.hpp" />
+    <ClInclude Include="Renderer\AssetsManager.hpp" />
+    <ClInclude Include="Renderer\model.hpp" />
+    <ClInclude Include="Renderer\renderer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

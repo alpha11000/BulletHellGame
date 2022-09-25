@@ -18,30 +18,45 @@
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
+    <ClCompile Include="Renderer\renderer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="renderer.cpp">
+    <ClCompile Include="Util\math.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="math.cpp">
+    <ClCompile Include="Renderer\model.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\AssetsManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\actor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\logic.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="objectUtil.hpp">
+    <ClInclude Include="Logic\actor.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="actor.hpp">
+    <ClInclude Include="Util\math.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="AssetsManager.hpp">
+    <ClInclude Include="Util\random.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="math.hpp">
+    <ClInclude Include="Renderer\renderer.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="randomUtil.hpp">
+    <ClInclude Include="Renderer\model.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\AssetsManager.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\logic.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
