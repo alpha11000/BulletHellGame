@@ -143,6 +143,8 @@ void Renderer::render() {
 	glPushMatrix();
 	glColor3f(1, 1, 1);
 
+	drawActor(Logic::getInstance().getPlayer());
+
 	for (auto& a : Logic::getInstance().getActors()) {
 		if (a.second.isRemoveable()) continue;
 		drawActor(a.second);

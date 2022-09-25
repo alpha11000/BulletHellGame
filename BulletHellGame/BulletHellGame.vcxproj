@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Control\controller.cpp" />
     <ClCompile Include="Logic\actor.cpp" />
     <ClCompile Include="Logic\logic.cpp" />
     <ClCompile Include="main.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="Renderer\AssetsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Control\controller.hpp" />
     <ClInclude Include="Logic\actor.hpp" />
     <ClInclude Include="Logic\logic.hpp" />
     <ClInclude Include="Util\math.hpp" />

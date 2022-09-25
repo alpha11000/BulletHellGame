@@ -8,7 +8,10 @@
 namespace vis {
 	class AssetsManager {
 	private:
+		enum ModelType { PLAYER, ENEMY, PROP };
+
 		std::string resFolder;
+		std::pair<GameObject, MTL> player;
 		std::vector<std::pair<GameObject, std::vector<MTL>>> enemies;
 
 		static math::Vector3 readVector3FromFile(FILE* file);
@@ -16,7 +19,7 @@ namespace vis {
 		static GameObject loadObjModel(FILE* obj);
 
 		void loadModels();
-		void loadModel(std::string baseName);
+		void loadModel(std::string baseName, ModelType modelType);
 		std::vector<vis::MTL> loadMtls(std::string baseName);
 
 		AssetsManager();
@@ -25,13 +28,14 @@ namespace vis {
 		AssetsManager(AssetsManager&&) = delete;
 		AssetsManager& operator=(AssetsManager&&) = delete;
 
+
 	public:
 		inline std::vector<std::pair<GameObject, std::vector<MTL>>> getEnemies() { return enemies; }
 
-		inline auto getEnemy(int index) { return enemies[index]; }
+		inline auto getPlayerModel() { return player; }
 
+		inline auto getEnemyModel(int index) { return enemies[index]; }
 		inline int getEnemiesCount() { return enemies.size(); }
-
 		inline int getEnemyMaterialCount(int index) { return enemies[index].second.size(); }
 
 		static AssetsManager& getInstance();

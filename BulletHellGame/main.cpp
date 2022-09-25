@@ -4,6 +4,7 @@
 #include "Renderer/renderer.hpp"
 #include "Util/math.hpp"
 #include "Logic/logic.hpp"
+#include "Control/controller.hpp"
 #include "Util/random.hpp"
 
 void initGLUT(const char* nome, int argc, char** argv) {
@@ -23,7 +24,7 @@ int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 
 	Renderer::getInstance();
-	//ipt::Input::getInstance();
+	Controller::getInstance();
 	Logic::getInstance();
 	
 	glutMainLoop();

@@ -10,6 +10,7 @@ private:
 	int lvl, lvls, enemies;
 	int num;
 
+	lgc::Actor player;
 	std::map<int, lgc::Actor> actors;
 	
 	Logic();
@@ -25,8 +26,10 @@ public:
 	}
 
 	void update(int val);
+	void onKeysUpdate();
 
 	static Logic& getInstance();
+	lgc::Actor& getPlayer();
 };
 
 void updateCB(int val);

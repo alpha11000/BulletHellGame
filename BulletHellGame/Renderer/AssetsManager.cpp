@@ -6,11 +6,13 @@ vis::AssetsManager::AssetsManager() {
 }
 
 void vis::AssetsManager::loadModels() {
-	loadModel("av1");
-	loadModel("av2");
+	loadModel("player", PLAYER);
+
+	loadModel("av1", ENEMY);
+	loadModel("av2", ENEMY);
 }
 
-void vis::AssetsManager::loadModel(std::string baseName) {
+void vis::AssetsManager::loadModel(std::string baseName, ModelType modelType) {
 	std::string objName = resFolder + baseName + ".obj";
 
 	FILE* objFile = nullptr;
@@ -20,7 +22,22 @@ void vis::AssetsManager::loadModel(std::string baseName) {
 
 	std::vector<MTL> mtls = loadMtls(baseName);
 
-	enemies.push_back(std::make_pair(obj, mtls));
+	if (mtls.empty()) {
+		MTL mtl = MTL();
+		mtls.push_back(mtl);
+	}
+
+	switch (modelType)
+	{
+	case PLAYER:
+		player = std::make_pair(obj, mtls[0]);
+		break;
+	case ENEMY:
+		enemies.push_back(std::make_pair(obj, mtls));
+		break;
+	default:
+		break;
+	}
 }
 
 std::vector<vis::MTL> vis::AssetsManager::loadMtls(std::string baseName) {
