@@ -140,16 +140,14 @@ void Renderer::render() {
 	glClearColor(0.2f, 0.4f, 0.6f, 1.0f);
 	glLoadIdentity();
 
-	glPushMatrix();
 	glColor3f(1, 1, 1);
 
 	drawActor(Logic::getInstance().getPlayer());
 
-	for (auto& a : Logic::getInstance().getActors()) {
+	for (auto& a : Logic::getInstance().getEnemies()) {
 		if (a.second.isRemoveable()) continue;
 		drawActor(a.second);
 	}
-	glPushMatrix();
 
 	glutSwapBuffers();
 }

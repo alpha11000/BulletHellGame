@@ -7,11 +7,13 @@
 class Logic {
 private:
 	int fps, ms;
-	int lvl, lvls, enemies;
+	int lvl, lvls;
 	int num;
+	int instanceID;
 
 	lgc::Actor player;
-	std::map<int, lgc::Actor> actors;
+	std::map<int, lgc::Ship> enemies;
+	std::map<int, lgc::Bullet> bullets;
 	
 	Logic();
 	Logic(const Logic&) = delete;
@@ -20,16 +22,16 @@ private:
 	Logic& operator=(Logic&&) = delete;
 
 public:
-	
-	inline auto getActors() {
-		return actors;
-	}
+	inline auto& getPlayer() { return player; };
+	inline auto& getEnemies() { return enemies; }
+	inline auto& getBullets() { return bullets; }
+
+	void addBullet(lgc::Bullet bullet);
 
 	void update(int val);
 	void onKeysUpdate();
 
 	static Logic& getInstance();
-	lgc::Actor& getPlayer();
 };
 
 void updateCB(int val);
