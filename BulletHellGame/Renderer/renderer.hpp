@@ -8,7 +8,7 @@
 
 class Renderer {
 public:
-	int W, H;
+	int W, H, zmax;
 private:
 	Renderer();
 	Renderer(const Renderer&) = delete;

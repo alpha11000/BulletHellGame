@@ -41,6 +41,7 @@ namespace lgc {
 			rot[2] = rZ;
 		}
 
+		inline void setGameObject(vis::GameObject newGO) { gameObject = newGO; }
 		inline vis::GameObject getGameObject() {return gameObject;}
 		inline std::map<std::string, vis::Material> getMaterials() { return materials; }
 		inline math::Vector3 getPosition() { return pos; }
@@ -78,10 +79,14 @@ namespace lgc {
 			maxVelMagnitude = math::euclidean(maxVel);
 		}
 
+		inline void changeAcceleration(math::Vector3 acc) {
+			accel = accel + acc;
+		}
+
 		inline void setAcceleration(float vX = 0, float vY = 0, float vZ = 0) {
-			velocity[0] = vX;
-			velocity[1] = vY;
-			velocity[2] = vZ;
+			accel[0] = vX;
+			accel[1] = vY;
+			accel[2] = vZ;
 		}
 
 		inline math::Vector3 getVelocity() { return velocity; }

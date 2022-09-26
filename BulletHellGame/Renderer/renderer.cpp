@@ -2,7 +2,8 @@
 #include "../Logic/logic.hpp"
 
 Renderer::Renderer() {
-	W = 800; H = 600;
+	W = 800, H = 600, zmax = 60;
+	
 	vis::AssetsManager::getInstance();
 
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -142,7 +143,8 @@ void Renderer::render() {
 
 	glColor3f(1, 1, 1);
 
-	drawActor(Logic::getInstance().getPlayer());
+	auto player = Logic::getInstance().getPlayer();
+	drawActor(player);
 
 	for (auto& a : Logic::getInstance().getEnemies()) {
 		if (a.second.isRemoveable()) continue;
@@ -158,7 +160,7 @@ void Renderer::reshape(int w, int h) {
 	glLoadIdentity();
 
 	float fov = 90.f;
-	float zs = 50.f;
+	float zs = zmax;
 	float camy = 20.f;
 
 	float raio = std::sqrt((zs * zs) + (camy * camy));

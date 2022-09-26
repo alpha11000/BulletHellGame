@@ -11,7 +11,7 @@ private:
 	int num;
 	int instanceID;
 
-	lgc::Actor player;
+	lgc::Ship player;
 	std::map<int, lgc::Ship> enemies;
 	std::map<int, lgc::Bullet> bullets;
 	

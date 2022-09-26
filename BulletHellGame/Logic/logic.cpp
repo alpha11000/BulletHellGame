@@ -7,37 +7,38 @@
 Logic::Logic() {
 	fps = 30;
 	ms = 1000 / fps;
-	lvl = 0; lvls = 100;
+	lvl = 0, lvls = 100;
 	instanceID = 0;
 	num = 0;
 	
 	auto playerModel = vis::AssetsManager::getInstance().getPlayerModel();
-	player = lgc::Actor(playerModel.first, math::Vector3(), math::Vector3(0, 180, 0));
+	auto enemyModel = vis::AssetsManager::getInstance().getEnemyModel(0);
+	player = lgc::Ship(playerModel.first, math::Vector3(), math::Vector3(0, 180, 0), math::Vector3(), math::Vector3(0, 20, 0), math::Vector3(0, 0, 0), enemyModel.first, 0.5, fps, 100, 10);
+	player.setGameObject(playerModel.first);
 	player.setMaterials(playerModel.second);
 
 	glutTimerFunc(1, updateCB, 0);
 }
 
 void Logic::addBullet(lgc::Bullet bullet) {
-	bullets.insert(std::make_pair(bullets.size(), bullet));
+	bullets.insert(std::make_pair(instanceID++, bullet));
 }
 
 void Logic::update(int val) {
 	num++;
 
-	if (num % 15 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
+	if (num % 25 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
 		int r1 = lgc::RandomUtil::getRandomIndex(lvls, lvl, vis::AssetsManager::getInstance().getEnemiesCount());
 
 		auto enemy = vis::AssetsManager::getInstance().getEnemyModel(r1);
 
-		lgc::Ship act = lgc::Ship(enemy.first, math::Vector3(0, 0.2, 30), math::Vector3(), math::Vector3(), math::Vector3(1, 0, 0), math::Vector3(0, 0, -0.5));
+		lgc::Ship act = lgc::Ship(enemy.first, math::Vector3(-10, 0.2, Renderer::getInstance().zmax), math::Vector3(), math::Vector3(), math::Vector3(1, 0, 0), math::Vector3(0, 0, -0.5));
 		act.setAccelerating(true);
 		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemy.second.size());
 
 		act.setMaterials(enemy.second[r2]);
 		
-		enemies.insert(std::make_pair(instanceID, act));
-		instanceID++;
+		enemies.insert(std::make_pair(instanceID++, act));
 		lvl++;
 	}
 
@@ -60,12 +61,17 @@ void Logic::update(int val) {
 }
 
 void Logic::onKeysUpdate() {
+	player.setAccelerating(false);
+	player.setAcceleration(0, 0, 0);
+
 	if (Controller::getInstance().specialIsPressed(GLUT_KEY_LEFT)) {
-		//player.setAccelerating(true);
+		player.changeAcceleration(math::Vector3(-0.1, 0, 0));
+		player.setAccelerating(true);
 	}
-	
+
 	if (Controller::getInstance().specialIsPressed(GLUT_KEY_RIGHT)) {
-		//player.setAccelerating(true);
+		player.changeAcceleration(math::Vector3(0.1 , 0, 0));
+		player.setAccelerating(true);
 	}
 }
 

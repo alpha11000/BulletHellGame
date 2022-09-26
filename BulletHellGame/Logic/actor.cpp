@@ -45,17 +45,17 @@ void lgc::Moveable::updateVelocity() {
 	}
 	else {
 		if (!isAccelerating &&
-			velocity[0] != 0 &&
-			velocity[1] != 0 &&
-			velocity[2] != 0)
+			(velocity[0] != 0 ||
+			velocity[1] != 0 ||
+			velocity[2] != 0))
 		{
 			if (std::abs(velocity[0]) >= spdLimit ||
 				std::abs(velocity[1]) >= spdLimit ||
 				std::abs(velocity[2]) >= spdLimit)
 			{
-				velocity[0] *= 1 / velocity[0];
-				velocity[1] *= 1 / velocity[1];
-				velocity[2] *= 1 / velocity[2];
+				velocity[0] -= velocity[0] / 6;
+				velocity[1] -= velocity[1] / 6;
+				velocity[2] -= velocity[2] / 6;
 			}
 			else
 				velocity = math::Vector3();
@@ -147,8 +147,6 @@ void lgc::Ship::onCollide(lgc::Ship other) {
 }
 
 void lgc::Ship::onUpdate() {
-	//std::cout << "POSICAO ANTES: " << pos;
 	move();
 	shoot(damage, velocity, maxVel, accel);
-	//std::cout << " POSICAO DPS: " << pos;
 }
