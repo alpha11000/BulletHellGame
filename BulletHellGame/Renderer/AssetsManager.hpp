@@ -8,11 +8,14 @@
 namespace vis {
 	class AssetsManager {
 	private:
-		enum ModelType { PLAYER, ENEMY, PROP };
+		enum ModelType { PLAYER, ENEMY, BOOST, ENVIROMENT, BULLET};
 
 		std::string resFolder;
 		std::pair<GameObject, MTL> player;
 		std::vector<std::pair<GameObject, std::vector<MTL>>> enemies;
+		std::vector<std::pair<GameObject, std::vector<MTL>>> boosts;
+		std::vector<std::pair<GameObject, std::vector<MTL>>> enviroment;
+		std::vector<std::pair<GameObject, std::vector<MTL>>> bullets;
 
 		static math::Vector3 readVector3FromFile(FILE* file);
 		static MTL loadMtl(FILE* mtl);
