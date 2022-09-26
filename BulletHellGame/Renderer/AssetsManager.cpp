@@ -10,6 +10,7 @@ void vis::AssetsManager::loadModels() {
 
 	loadModel("av1", ENEMY);
 	loadModel("av2", ENEMY);
+	loadModel("bullet1", BULLET);
 }
 
 void vis::AssetsManager::loadModel(std::string baseName, ModelType modelType) {

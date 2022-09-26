@@ -98,6 +98,7 @@ namespace lgc {
 		int shootRate, shootDelayS, damage, ticksCounter;
 		bool isShooting;
 		vis::GameObject bulletModel;
+		vis::MTL bulletMTL;
 
 	public:
 		Shooter(
@@ -105,7 +106,7 @@ namespace lgc {
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3(),
 			vis::GameObject bulletModel = vis::GameObject(),
-			int shootDelayS = 0, int fps = 0, int damage = 0
+			float shootDelayS = 0, int fps = 0, int damage = 0
 		);
 
 		void shoot(
@@ -119,6 +120,9 @@ namespace lgc {
 			if (shouldShoot != isShooting) ticksCounter = 0;
 			isShooting = shouldShoot;
 		}
+
+		inline void setBulletGameObject(vis::GameObject bulletGO) { bulletModel = bulletGO; }
+		inline void setBulletGameObject(vis::MTL bulletMTL) { this->bulletMTL = bulletMTL; }
 
 	};
 
@@ -156,7 +160,7 @@ namespace lgc {
 			math::Vector3 maxVel = math::Vector3(),
 			math::Vector3 acceleration = math::Vector3(),
 			vis::GameObject bulletModel = vis::GameObject(),
-			int shootDelayS = 0, int fps = 0, int hp = 0, int damage = 0
+			float shootDelayS = 0, int fps = 0, int hp = 0, int damage = 0
 		);
 
 		void onCollide(lgc::Bullet other);

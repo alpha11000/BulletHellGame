@@ -22,7 +22,7 @@ private:
 	Logic& operator=(Logic&&) = delete;
 
 public:
-	inline auto& getPlayer() { return player; };
+	inline auto& getPlayer() { return player; }
 	inline auto& getEnemies() { return enemies; }
 	inline auto& getBullets() { return bullets; }
 

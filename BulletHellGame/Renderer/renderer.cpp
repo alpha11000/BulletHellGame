@@ -151,6 +151,11 @@ void Renderer::render() {
 		drawActor(a.second);
 	}
 
+	for (auto& b : Logic::getInstance().getBullets()) {
+		if (b.second.isRemoveable()) continue;
+		drawActor(b.second);
+	}
+
 	glutSwapBuffers();
 }
 

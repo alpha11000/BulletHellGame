@@ -12,10 +12,11 @@ Logic::Logic() {
 	num = 0;
 	
 	auto playerModel = vis::AssetsManager::getInstance().getPlayerModel();
-	auto enemyModel = vis::AssetsManager::getInstance().getEnemyModel(0);
-	player = lgc::Ship(playerModel.first, math::Vector3(), math::Vector3(0, 180, 0), math::Vector3(), math::Vector3(0, 20, 0), math::Vector3(0, 0, 0), enemyModel.first, 0.5, fps, 100, 10);
+	auto bulletModel = vis::AssetsManager::getInstance().getBulletModel(0);
+	player = lgc::Ship(playerModel.first, math::Vector3(), math::Vector3(0, 180, 0), math::Vector3(), math::Vector3(0, 5, 0), math::Vector3(0, 0, 0), bulletModel.first, 0.1, fps, 100, 10);
 	player.setGameObject(playerModel.first);
 	player.setMaterials(playerModel.second);
+	player.setBulletGameObject(bulletModel.first);
 
 	glutTimerFunc(1, updateCB, 0);
 }
@@ -27,7 +28,7 @@ void Logic::addBullet(lgc::Bullet bullet) {
 void Logic::update(int val) {
 	num++;
 
-	if (num % 25 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
+	if (num % 20 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
 		int r1 = lgc::RandomUtil::getRandomIndex(lvls, lvl, vis::AssetsManager::getInstance().getEnemiesCount());
 
 		auto enemy = vis::AssetsManager::getInstance().getEnemyModel(r1);
@@ -51,9 +52,21 @@ void Logic::update(int val) {
 
 		if (kv.second.isRemoveable()) disableds.insert(kv.first);
 	}
-
+	
 	for (int i : disableds) {
 		enemies.erase(i);
+	}
+
+	disableds.clear();
+
+	for (auto& kv : bullets) {
+		kv.second.onUpdate();
+
+		if (kv.second.isRemoveable()) disableds.insert(kv.first);
+	}
+
+	for (int i : disableds) {
+		bullets.erase(i);
 	}
 
 	glutPostRedisplay();
@@ -65,14 +78,19 @@ void Logic::onKeysUpdate() {
 	player.setAcceleration(0, 0, 0);
 
 	if (Controller::getInstance().specialIsPressed(GLUT_KEY_LEFT)) {
-		player.changeAcceleration(math::Vector3(-0.1, 0, 0));
+		player.changeAcceleration(math::Vector3(-0.3, 0, 0));
 		player.setAccelerating(true);
 	}
 
 	if (Controller::getInstance().specialIsPressed(GLUT_KEY_RIGHT)) {
-		player.changeAcceleration(math::Vector3(0.1 , 0, 0));
+		player.changeAcceleration(math::Vector3(0.3, 0, 0));
 		player.setAccelerating(true);
 	}
+
+	if (Controller::getInstance().isPressed(' '))
+		player.setShooting(true);
+	else
+		player.setShooting(false);
 }
 
 Logic& Logic::getInstance() {

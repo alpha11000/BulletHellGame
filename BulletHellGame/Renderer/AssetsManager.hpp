@@ -38,6 +38,7 @@ namespace vis {
 		inline auto getPlayerModel() { return player; }
 
 		inline auto getEnemyModel(int index) { return enemies[index]; }
+		inline auto getBulletModel(int index) { return bullets[index]; }
 		inline int getEnemiesCount() { return enemies.size(); }
 		inline int getEnemyMaterialCount(int index) { return enemies[index].second.size(); }
 

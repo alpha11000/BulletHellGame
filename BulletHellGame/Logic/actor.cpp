@@ -66,11 +66,6 @@ void lgc::Moveable::updateVelocity() {
 void lgc::Moveable::move() {
 	updateVelocity();
 	pos = pos + velocity;
-	//std::cout << "position: " << pos <<
-	//	" veloc: " << velocity <<
-	//	" max veloc: " << maxVel <<
-	//	" max veloc mag:" << math::euclidean(maxVel) <<
-	//	" accel: " << accel << "\n";
 }
 
 void lgc::Moveable::onUpdate() {
@@ -83,12 +78,14 @@ lgc::Shooter::Shooter(
 	math::Vector3 position,
 	math::Vector3 rotation,
 	vis::GameObject bulletModel,
-	int shootDelayS, int fps, int damage
+	float shootDelayS, int fps, int damage
 ) : Actor(gameObject, position, rotation),
 	shootDelayS(shootDelayS),
-	shootRate(fps * shootDelayS),
 	bulletModel(bulletModel),
-	ticksCounter(0), damage(damage), isShooting(false) {}
+	ticksCounter(0), damage(damage), isShooting(false) 
+{
+	shootRate = (float)shootDelayS * fps;
+}
 
 void lgc::Shooter::shoot(
 	int damage,
@@ -96,12 +93,13 @@ void lgc::Shooter::shoot(
 	math::Vector3 max_vel,
 	math::Vector3 accel
 	) {
-	
-	if (isShooting && ticksCounter == 0)
+	if (!isShooting) return;
+	if (ticksCounter == 0) {
 		Logic::getInstance().addBullet(Bullet(
-			damage, bulletModel, pos, rot, vel, max_vel, accel
+			damage, bulletModel, pos, rot, math::Vector3(0, 0, vel[2] - 1), max_vel, math::Vector3(0, 0, accel[2])
 		));
-	else ticksCounter++;
+	}
+	ticksCounter++;
 
 	if (ticksCounter >= shootRate) ticksCounter = 0;
 }
@@ -115,8 +113,11 @@ lgc::Bullet::Bullet(
 	math::Vector3 velocity,
 	math::Vector3 maxVel,
 	math::Vector3 acceleration
-) : Moveable(gameObject, position, rotation, velocity, maxVel, acceleration),
-	damage(damage) {}
+) : Actor(gameObject, position, rotation),
+	Moveable(gameObject, position, rotation, velocity, maxVel, acceleration),
+	damage(damage) {
+	setAccelerating(true);
+}
 
 void lgc::Bullet::onCollide(lgc::Ship other) {
 	removeable = true;
@@ -131,7 +132,7 @@ lgc::Ship::Ship(
 	math::Vector3 maxVel,
 	math::Vector3 acceleration,
 	vis::GameObject bulletModel,
-	int shootRate, int shootDelayS, int hp, int damage
+	float shootRate, int shootDelayS, int hp, int damage
 ) : Actor(gameObject, position, rotation), 
 	Moveable(gameObject, position, rotation, velocity, maxVel, acceleration),
 	Shooter(gameObject, position, rotation, bulletModel, shootRate, shootDelayS, damage),
