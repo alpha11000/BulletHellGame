@@ -92,15 +92,11 @@ void lgc::Shooter::onUpdate() {
 	Actor::onUpdate();
 }
 
-void lgc::Shooter::shoot(
-	math::Vector3 vel,
-	math::Vector3 max_vel,
-	math::Vector3 accel
-	) {
+void lgc::Shooter::shoot() {
 	if (!isShooting) return;
 	if (ticksCounter == 0) {
 		Logic::getInstance().addBullet(Bullet(
-			bulletDamage, bulletModel, pos, rot, math::Vector3(0, 0, vel[2] - 30), max_vel, math::Vector3(0, 0, accel[2])
+			bulletDamage, bulletModel, pos, rot, math::Vector3(0, 0, bulletVel[2]), bulletMaxVel, math::Vector3(0, 0, bulletAccel[2])
 		));
 	}
 	ticksCounter++;
@@ -155,6 +151,6 @@ void lgc::Ship::onCollide(lgc::Ship other) {
 
 void lgc::Ship::onUpdate() {
 	move();
-	shoot(velocity, maxVel, accel);
+	shoot();
 	Actor::onUpdate();
 }

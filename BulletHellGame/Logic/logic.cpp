@@ -23,8 +23,8 @@ Logic::Logic() {
 		.setMaxVel(math::Vector3(0, 3, 0));
 	player
 		.setBulletGameObject(bulletModel.first)
-		.setBulletVel(math::Vector3(0, 0.4, 0))
-		.setBulletMaxVel(math::Vector3(0, 3, 0))
+		.setBulletVel(math::Vector3(0, 0, -0.4))
+		.setBulletMaxVel(math::Vector3(0, 0, 0.3))
 		.setBulletDamage(100)
 		.setShootDelay(0.2, tps);
 	player

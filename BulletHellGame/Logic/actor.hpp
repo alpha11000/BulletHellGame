@@ -130,11 +130,7 @@ namespace lgc {
 
 		void onUpdate();
 
-		void shoot(
-			math::Vector3 vel = math::Vector3(),
-			math::Vector3 max_vel = math::Vector3(),
-			math::Vector3 accel = math::Vector3()
-		);
+		void shoot();
 
 		inline Shooter& setShooting(bool shouldShoot) { 
 			if (shouldShoot != isShooting) ticksCounter = 0;

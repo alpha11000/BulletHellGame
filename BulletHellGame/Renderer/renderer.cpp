@@ -98,7 +98,8 @@ void Renderer::drawActor(lgc::Actor actor) {
 
 		mat = ((materials.count(matName))) ? materials[matName] : errorMaterial;
 
-		nextMatIndex = materialIndexes[0].first;
+		if (materialIndexes.size() > 1)
+			nextMatIndex = materialIndexes[1].first;
 	}
 
 	glPushMatrix();
