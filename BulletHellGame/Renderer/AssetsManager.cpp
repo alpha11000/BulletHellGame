@@ -7,6 +7,16 @@ vis::AssetsManager::AssetsManager() {
 
 void vis::AssetsManager::loadModels() {
 	loadModel("player", PLAYER);
+	loadModel("props/floor", FLOOR);
+	
+	loadModel("props/tree1", ENVIROMENT);
+
+	loadModel("props/house1", ENVIROMENT);
+	loadModel("props/house2", ENVIROMENT);
+	loadModel("props/house3", ENVIROMENT);
+	loadModel("props/house4", ENVIROMENT);
+
+	loadModel("props/street", ENVIROMENT);
 
 	loadModel("av1", ENEMY);
 	loadModel("av2", ENEMY);
@@ -32,6 +42,9 @@ void vis::AssetsManager::loadModel(std::string baseName, ModelType modelType) {
 	{
 	case PLAYER:
 		player = std::make_pair(obj, mtls[0]);
+		break;
+	case FLOOR:
+		floor = std::make_pair(obj, mtls[0]);
 		break;
 	case ENEMY:
 		enemies.push_back(std::make_pair(obj, mtls));

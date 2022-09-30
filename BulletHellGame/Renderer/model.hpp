@@ -21,7 +21,7 @@ namespace vis {
 	struct MTL {
 		std::map<std::string, Material> mtlMaterials;
 
-		MTL(std::map<std::string, Material> mtlMaterials = std::map<std::string, Material>());
+		MTL(std::map<std::string, Material> mtlMaterials = {{"", Material()}});
 	};
 
 	struct Polygon {

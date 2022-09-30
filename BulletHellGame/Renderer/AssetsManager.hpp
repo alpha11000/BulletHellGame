@@ -8,10 +8,11 @@
 namespace vis {
 	class AssetsManager {
 	private:
-		enum ModelType { PLAYER, ENEMY, BOOST, ENVIROMENT, BULLET};
+		enum ModelType { PLAYER, ENEMY, BOOST, ENVIROMENT, BULLET, FLOOR};
 
 		std::string resFolder;
 		std::pair<GameObject, MTL> player;
+		std::pair<GameObject, MTL> floor;
 		std::vector<std::pair<GameObject, std::vector<MTL>>> enemies;
 		std::vector<std::pair<GameObject, std::vector<MTL>>> boosts;
 		std::vector<std::pair<GameObject, std::vector<MTL>>> enviroment;
@@ -36,10 +37,14 @@ namespace vis {
 		inline std::vector<std::pair<GameObject, std::vector<MTL>>> getEnemies() { return enemies; }
 
 		inline auto* getPlayerModel() { return &player; }
+		inline auto* getFloorModel() { return &floor; }
 
 		inline auto* getEnemyModel(int index) { return &enemies[index]; }
 		inline auto* getBulletModel(int index) { return &bullets[index]; }
+		inline auto* getEnviromentModel(int index) { return &enviroment[index]; }
+
 		inline int getEnemiesCount() { return enemies.size(); }
+		inline int getEnviromentCount() { return enviroment.size(); }
 		inline int getEnemyMaterialCount(int index) { return enemies[index].second.size(); }
 
 		static AssetsManager& getInstance();

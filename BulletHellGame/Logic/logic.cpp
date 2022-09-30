@@ -2,6 +2,7 @@
 #include "../Util/math.hpp"
 #include "../Util/random.hpp"
 #include "../Control/controller.hpp"
+#include <cstdlib>
 #include <set>
 
 Logic::Logic() {
@@ -9,9 +10,9 @@ Logic::Logic() {
 	ms = 1000 / tps;
 	lvl = 0, lvls = 100;
 	instanceID = 0;
-	num = 0;
 	
 	auto* playerModel = vis::AssetsManager::getInstance().getPlayerModel();
+	auto* floorModel = vis::AssetsManager::getInstance().getFloorModel();
 	auto* bulletModel = vis::AssetsManager::getInstance().getBulletModel(0);
 
 	player = lgc::Ship();
@@ -30,6 +31,10 @@ Logic::Logic() {
 	player
 		.setHP(100);
 
+	floor = lgc::Actor(&(floorModel->first));
+	floor.setMaterials(&floorModel->second);
+	floor.setPosition(0, -4, 0);
+
 	glutTimerFunc(1, updateCB, 0);
 }
 
@@ -38,27 +43,57 @@ void Logic::addBullet(lgc::Bullet bullet) {
 }
 
 void Logic::update(int val) {
-	num++;
+	static int enemNum = 0, envNum = 0;
+	enemNum++;
+	envNum++;
 
-	if (num % 50 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
+	if (enemNum > 80 && rand() % 25 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
+		enemNum = 0;
+
 		int r1 = lgc::RandomUtil::getRandomIndex(lvls, lvl, vis::AssetsManager::getInstance().getEnemiesCount());
 
 		auto* enemy = vis::AssetsManager::getInstance().getEnemyModel(r1);
 
-		lgc::Ship act = lgc::Ship(&enemy->first, math::Vector3(-10, 0.2, Renderer::getInstance().zmax), math::Vector3(), math::Vector3(), math::Vector3(1, 0, 0), math::Vector3(0, 0, -0.5));
-		act.setAccelerating(true);
+		lgc::Ship act = lgc::Ship(&enemy->first, math::Vector3(25 - (rand() % 50), 0.2, Renderer::getInstance().zmax), math::Vector3(), math::Vector3(), math::Vector3(1, 0, 0), math::Vector3(0, 0, -0.5));
+
 		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemy->second.size());
 
-		act.setMaterials(&enemy->second[r2]);
-		
+		act.setAcceleration(math::Vector3(0, 0, -0.01))
+			.setMaxVel(math::Vector3(0, 0, -0.1))
+			.setAccelerating(true)
+			.setMaterials(&enemy->second[r2]);
+
 		enemies.insert(std::make_pair(instanceID++, act));
 		lvl++;
+	}
+
+	if (envNum > 50 && rand() % 10 == 0 && vis::AssetsManager::getInstance().getEnviromentCount() > 0) {
+		envNum = 0;
+
+		int r1 = lgc::RandomUtil::getRandomIndex(100, lgc::RandomUtil::getRandom(0, 100), vis::AssetsManager::getInstance().getEnviromentCount());
+
+		auto* env = vis::AssetsManager::getInstance().getEnviromentModel(r1);
+
+		lgc::Moveable act = lgc::Moveable(&env->first);
+
+
+
+		act.setAccelerating(true);
+		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, env->second.size());
+
+		act.setAcceleration(math::Vector3(0, 0, -0.005))
+			.setMaxVel(math::Vector3(0, 0, -0.05))
+			.setMaterials(&env->second[r2])
+			.setPosition(lgc::RandomUtil::getRandom(-50, 50), -4, Renderer::getInstance().zmax);
+
+		enviroment.insert(std::make_pair(instanceID++, act));
 	}
 
 	player.onUpdate();
 
 	std::set<int> disableds;
 
+	//enemies update
 	for (auto& kv : enemies) {
 		kv.second.onUpdate();
 
@@ -71,6 +106,7 @@ void Logic::update(int val) {
 
 	disableds.clear();
 
+	//bullets update
 	for (auto& kv : bullets) {
 		kv.second.onUpdate();
 
@@ -80,6 +116,19 @@ void Logic::update(int val) {
 	for (int i : disableds) {
 		bullets.erase(i);
 	}
+
+	//enviroment update
+	for (auto& kv : enviroment) {
+		kv.second.onUpdate();
+
+		if (kv.second.isRemoveable()) disableds.insert(kv.first);
+	}
+
+	for (int i : disableds) {
+		enemies.erase(i);
+	}
+
+	disableds.clear();
 
 	glutTimerFunc(ms, updateCB, 0);
 }

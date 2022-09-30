@@ -19,7 +19,7 @@ namespace lgc {
 
 	public:
 		Actor(
-			vis::GameObject* gameObject,
+			vis::GameObject* gameObject = nullptr,
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3()
 		);
@@ -102,7 +102,10 @@ namespace lgc {
 		}
 
 		inline math::Vector3 getVelocity() { return velocity; }
-		inline void setAccelerating(bool shouldAccelerate) { isAccelerating = shouldAccelerate; }
+		inline Moveable& setAccelerating(bool shouldAccelerate) { 
+			isAccelerating = shouldAccelerate; 
+			return *this;
+		}
 	};
 
 	class Collidable : virtual public Actor {
