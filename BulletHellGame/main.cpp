@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 
 	Renderer::getInstance();
-	Controller::getInstance();
+	Controller::getInstance(); 
 	Logic::getInstance();
 	
 	glutMainLoop();
