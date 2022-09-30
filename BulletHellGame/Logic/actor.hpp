@@ -13,8 +13,8 @@ namespace lgc {
 	protected:
 		bool removeable;
 
-		vis::GameObject* gameObject = nullptr;
-		std::map<std::string, vis::Material> materials;
+		vis::GameObject* gameObject;
+		std::map<std::string, vis::Material>* materials;
 		math::Vector3 pos, rot;
 
 	public:
@@ -51,13 +51,13 @@ namespace lgc {
 			return *this;
 		}
 
-		inline Actor& setMaterials(vis::MTL newMTL) { 
-			materials = newMTL.mtlMaterials;
+		inline Actor& setMaterials(vis::MTL *newMTL) { 
+			materials = &(newMTL->mtlMaterials);
 			return *this;
 		}
 
 		inline vis::GameObject& getGameObject() { return *gameObject; }
-		inline const std::map<std::string, vis::Material>& getMaterials() { return materials; }
+		inline std::map<std::string, vis::Material>& getMaterials() { return *materials; }
 		inline math::Vector3 getPosition() { return pos; }
 		inline math::Vector3 getRotation() { return rot; }
 	};

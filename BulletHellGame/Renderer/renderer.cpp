@@ -79,7 +79,7 @@ void Renderer::drawActor(lgc::Actor actor) {
 		&normals = gameObject.getNormals(),
 		&uvCordinates = gameObject.getUvCordinates();
 
-	auto materials = actor.getMaterials();
+	auto& materials = actor.getMaterials();
 	vis::Material errorMaterial = vis::Material();
 
 	std::vector<vis::Polygon>& polygons = gameObject.getPolygons();

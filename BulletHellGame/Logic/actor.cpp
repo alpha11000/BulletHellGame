@@ -3,13 +3,14 @@
 #include "../Logic/logic.hpp"
 
 lgc::Actor::Actor(
-	vis::GameObject* gameObject,
+	vis::GameObject* gObj,
 	math::Vector3 position,
 	math::Vector3 rotation) :
-	gameObject(gameObject),
+	gameObject(gObj),
 	pos(position),
 	rot(rotation) {
 	removeable = false;
+	materials = &Renderer::getInstance().error_mats;
 }
 
 void lgc::Actor::onUpdate() {

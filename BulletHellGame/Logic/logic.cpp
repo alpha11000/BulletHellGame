@@ -17,7 +17,7 @@ Logic::Logic() {
 	player = lgc::Ship();
 	player
 		.setGameObject(&(playerModel->first))
-		.setMaterials(playerModel->second)
+		.setMaterials(&(playerModel->second))
 		.setRotation(0, 180, 0);
 	player
 		.setMaxVel(math::Vector3(0, 3, 0));
@@ -49,7 +49,7 @@ void Logic::update(int val) {
 		act.setAccelerating(true);
 		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemy->second.size());
 
-		act.setMaterials(enemy->second[r2]);
+		act.setMaterials(&enemy->second[r2]);
 		
 		enemies.insert(std::make_pair(instanceID++, act));
 		lvl++;
