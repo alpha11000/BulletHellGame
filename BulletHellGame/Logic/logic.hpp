@@ -6,7 +6,7 @@
 
 class Logic {
 private:
-	int fps, ms;
+	int tps, ms;
 	int lvl, lvls;
 	int num;
 	int instanceID;

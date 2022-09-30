@@ -3,6 +3,7 @@
 
 Renderer::Renderer() {
 	W = 800, H = 600, zmax = 60;
+	fps = 60, ms = 1000 / fps;
 	
 	vis::AssetsManager::getInstance();
 
@@ -53,6 +54,8 @@ Renderer::Renderer() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glutTimerFunc(1, requestRenderCB, 0);
 }
 
 static void setColor(vis::Material material) {
@@ -95,7 +98,7 @@ void Renderer::drawActor(lgc::Actor actor) {
 
 		mat = ((materials.count(matName))) ? materials[matName] : errorMaterial;
 
-		nextMatIndex = materialIndexes[1].first;
+		nextMatIndex = materialIndexes[0].first;
 	}
 
 	glPushMatrix();
@@ -185,6 +188,11 @@ void Renderer::reshape(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void Renderer::requestRender() {
+	glutPostRedisplay();
+	glutTimerFunc(ms, requestRenderCB, 0);
+}
+
 Renderer& Renderer::getInstance() {
 	static Renderer instance;
 	return instance;
@@ -192,3 +200,4 @@ Renderer& Renderer::getInstance() {
 
 void renderCB() { Renderer::getInstance().render(); }
 void reshapeCB(int w, int h) { Renderer::getInstance().reshape(w, h); }
+void requestRenderCB(int val) { Renderer::getInstance().requestRender(); }

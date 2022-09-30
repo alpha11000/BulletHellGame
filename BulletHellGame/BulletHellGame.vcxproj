@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="Control\controller.cpp" />
     <ClCompile Include="Logic\actor.cpp" />
+    <ClCompile Include="Logic\collisionSolver.cpp" />
     <ClCompile Include="Logic\logic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Util\math.cpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="Control\controller.hpp" />
     <ClInclude Include="Logic\actor.hpp" />
+    <ClInclude Include="Logic\collisionSolver.hpp" />
     <ClInclude Include="Logic\logic.hpp" />
     <ClInclude Include="Util\math.hpp" />
     <ClInclude Include="Util\random.hpp" />

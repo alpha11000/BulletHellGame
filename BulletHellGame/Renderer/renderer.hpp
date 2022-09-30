@@ -8,7 +8,7 @@
 
 class Renderer {
 public:
-	int W, H, zmax;
+	int W, H, zmax, fps, ms;
 private:
 	Renderer();
 	Renderer(const Renderer&) = delete;
@@ -22,7 +22,9 @@ public:
 
 	void drawActor(lgc::Actor actor);
 	static Renderer& getInstance();
+	void requestRender();
 };
 
 void renderCB();
 void reshapeCB(int w, int h);
+void requestRenderCB(int val);

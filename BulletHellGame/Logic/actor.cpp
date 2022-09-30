@@ -12,16 +12,13 @@ lgc::Actor::Actor(
 	removeable = false;
 }
 
-void lgc::Actor::setMaterials(vis::MTL materials) {
-	this->materials = materials.mtlMaterials;
-}
-
 void lgc::Actor::onUpdate() {
-	if (pos[2] < -10) {
-		removeable = false;
-	}
+	//if (pos[2] < -10) removeable = true;
 }
 
+void lgc::Actor::draw() {
+	Renderer::getInstance().drawActor(*this);
+}
 
 lgc::Moveable::Moveable(
 	vis::GameObject gameObject,
@@ -70,6 +67,7 @@ void lgc::Moveable::move() {
 
 void lgc::Moveable::onUpdate() {
 	move();
+	Actor::onUpdate();
 }
 
 
@@ -78,17 +76,23 @@ lgc::Shooter::Shooter(
 	math::Vector3 position,
 	math::Vector3 rotation,
 	vis::GameObject bulletModel,
-	float shootDelayS, int fps, int damage
+	float shootDelayS, int fps
 ) : Actor(gameObject, position, rotation),
 	shootDelayS(shootDelayS),
 	bulletModel(bulletModel),
-	ticksCounter(0), damage(damage), isShooting(false) 
+	ticksCounter(0), isShooting(false), bulletDamage(0)
 {
 	shootRate = (float)shootDelayS * fps;
+	bulletVel = bulletAccel = math::Vector3();
+	bulletMaxVel = math::Vector3(1, 0, 0);
+}
+
+void lgc::Shooter::onUpdate() {
+	shoot();
+	Actor::onUpdate();
 }
 
 void lgc::Shooter::shoot(
-	int damage,
 	math::Vector3 vel,
 	math::Vector3 max_vel,
 	math::Vector3 accel
@@ -96,7 +100,7 @@ void lgc::Shooter::shoot(
 	if (!isShooting) return;
 	if (ticksCounter == 0) {
 		Logic::getInstance().addBullet(Bullet(
-			damage, bulletModel, pos, rot, math::Vector3(0, 0, vel[2] - 1), max_vel, math::Vector3(0, 0, accel[2])
+			bulletDamage, bulletModel, pos, rot, math::Vector3(0, 0, vel[2] - 30), max_vel, math::Vector3(0, 0, accel[2])
 		));
 	}
 	ticksCounter++;
@@ -133,10 +137,12 @@ lgc::Ship::Ship(
 	math::Vector3 acceleration,
 	vis::GameObject bulletModel,
 	float shootRate, int shootDelayS, int hp, int damage
-) : Actor(gameObject, position, rotation), 
-	Moveable(gameObject, position, rotation, velocity, maxVel, acceleration),
-	Shooter(gameObject, position, rotation, bulletModel, shootRate, shootDelayS, damage),
-	hp(hp) {}
+) : Actor(gameObject, position, rotation),
+Moveable(gameObject, position, rotation, velocity, maxVel, acceleration),
+Shooter(gameObject, position, rotation, bulletModel, shootRate, shootDelayS),
+hp(hp) {
+	setBulletMaxVel(maxVel);
+}
 
 void lgc::Ship::onCollide(lgc::Bullet other) {
 	hp -= other.getDamage();
@@ -149,5 +155,6 @@ void lgc::Ship::onCollide(lgc::Ship other) {
 
 void lgc::Ship::onUpdate() {
 	move();
-	shoot(damage, velocity, maxVel, accel);
+	shoot(velocity, maxVel, accel);
+	Actor::onUpdate();
 }
