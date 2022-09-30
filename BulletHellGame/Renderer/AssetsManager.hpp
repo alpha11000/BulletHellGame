@@ -18,6 +18,8 @@ namespace vis {
 		std::vector<std::pair<GameObject, std::vector<MTL>>> enviroment;
 		std::vector<std::pair<GameObject, std::vector<MTL>>> bullets;
 
+		int enviromentFixedXIndex = 0;
+
 		static math::Vector3 readVector3FromFile(FILE* file);
 		static MTL loadMtl(FILE* mtl);
 		static GameObject loadObjModel(FILE* obj);
@@ -42,6 +44,8 @@ namespace vis {
 		inline auto* getEnemyModel(int index) { return &enemies[index]; }
 		inline auto* getBulletModel(int index) { return &bullets[index]; }
 		inline auto* getEnviromentModel(int index) { return &enviroment[index]; }
+
+		inline int getFixedEnviromentXIndex() { return enviromentFixedXIndex; }
 
 		inline int getEnemiesCount() { return enemies.size(); }
 		inline int getEnviromentCount() { return enviroment.size(); }

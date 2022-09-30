@@ -16,6 +16,8 @@ void vis::AssetsManager::loadModels() {
 	loadModel("props/house3", ENVIROMENT);
 	loadModel("props/house4", ENVIROMENT);
 
+	//fixing x, and importing fixed x objects
+	enviromentFixedXIndex = enviroment.size();
 	loadModel("props/street", ENVIROMENT);
 
 	loadModel("av1", ENEMY);

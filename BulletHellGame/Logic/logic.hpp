@@ -8,7 +8,9 @@ class Logic {
 private:
 	int tps, ms;
 	int lvl, lvls;
-	unsigned int instanceID;
+	unsigned long long instanceID;
+
+	int xMin = -50, xMax = 50;
 
 	lgc::Ship player;
 	lgc::Actor floor;

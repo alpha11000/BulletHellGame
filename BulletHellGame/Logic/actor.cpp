@@ -15,7 +15,7 @@ lgc::Actor::Actor(
 
 void lgc::Actor::onUpdate() {
 	if (
-		pos[2] > Renderer::getInstance().zmax ||
+		pos[2] > Renderer::getInstance().zmax + 15 ||
 		pos[2] < -5
 	) removeable = true;
 }
@@ -101,9 +101,9 @@ void lgc::Shooter::shoot() {
 	if (!isShooting) return;
 	if (ticksCounter >= shootRate) ticksCounter = 0;
 	if (ticksCounter == 0) {
-		Logic::getInstance().addBullet(Bullet(
-			bulletModel, pos, rot, math::Vector3(0, 0, bulletVel[2]), bulletMaxVel, math::Vector3(0, 0, bulletAccel[2]), bulletDamage
-		));
+		auto bullet = Bullet(bulletModel, pos, rot, math::Vector3(0, 0, bulletVel[2]), bulletMaxVel, math::Vector3(0, 0, bulletAccel[2]), bulletDamage);
+		bullet.setMaterials(bulletMaterials);
+		Logic::getInstance().addBullet(bullet);
 	}
 
 }

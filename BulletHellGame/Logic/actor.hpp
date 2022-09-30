@@ -124,7 +124,7 @@ namespace lgc {
 		bool isShooting;
 		math::Vector3 bulletVel, bulletMaxVel, bulletAccel;
 		vis::GameObject* bulletModel;
-		vis::MTL bulletMTL;
+		vis::MTL* bulletMaterials;
 
 	public:
 		Shooter(
@@ -149,8 +149,8 @@ namespace lgc {
 			return *this;
 		}
 
-		inline Shooter& setBulletGameObject(vis::MTL newBulletMTL) {
-			bulletMTL = newBulletMTL;
+		inline Shooter& setBulletMaterial(vis::MTL* newBulletMTL) {
+			bulletMaterials = newBulletMTL;
 			return *this;
 		}
 

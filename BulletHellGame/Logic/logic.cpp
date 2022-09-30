@@ -24,6 +24,7 @@ Logic::Logic() {
 		.setMaxVel(math::Vector3(0, 3, 0));
 	player
 		.setBulletGameObject(&(bulletModel->first))
+		.setBulletMaterial(&(bulletModel->second[1]))
 		.setBulletVel(math::Vector3(0, 0, 0.4))
 		.setBulletMaxVel(math::Vector3(0, 0, 0.3))
 		.setBulletDamage(100)
@@ -67,24 +68,26 @@ void Logic::update(int val) {
 		lvl++;
 	}
 
-	if (envNum > 50 && rand() % 10 == 0 && vis::AssetsManager::getInstance().getEnviromentCount() > 0) {
+	if (envNum > 20 && rand() % 5 == 0 && vis::AssetsManager::getInstance().getEnviromentCount() > 0) {
 		envNum = 0;
 
-		int r1 = lgc::RandomUtil::getRandomIndex(100, lgc::RandomUtil::getRandom(0, 100), vis::AssetsManager::getInstance().getEnviromentCount());
+		int r1 = lgc::RandomUtil::getRandomIndex(10, 1, vis::AssetsManager::getInstance().getEnviromentCount());
 
 		auto* env = vis::AssetsManager::getInstance().getEnviromentModel(r1);
 
 		lgc::Moveable act = lgc::Moveable(&env->first);
 
-
-
 		act.setAccelerating(true);
 		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, env->second.size());
+
+		float xPos = (r1 < vis::AssetsManager::getInstance().getFixedEnviromentXIndex()) ?
+			lgc::RandomUtil::getRandom(xMin, xMax) :
+			0;
 
 		act.setAcceleration(math::Vector3(0, 0, -0.005))
 			.setMaxVel(math::Vector3(0, 0, -0.05))
 			.setMaterials(&env->second[r2])
-			.setPosition(lgc::RandomUtil::getRandom(-50, 50), -4, Renderer::getInstance().zmax);
+			.setPosition(xPos, -4, Renderer::getInstance().zmax + 15);
 
 		enviroment.insert(std::make_pair(instanceID++, act));
 	}
