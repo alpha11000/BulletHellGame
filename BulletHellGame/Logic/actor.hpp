@@ -6,17 +6,20 @@
 #include "collisionSolver.hpp"
 
 namespace lgc {
+	class Ship;
+	class Bullet;
+
 	class Actor {
 	protected:
 		bool removeable;
 
-		vis::GameObject gameObject;
+		vis::GameObject* gameObject = nullptr;
 		std::map<std::string, vis::Material> materials;
 		math::Vector3 pos, rot;
 
 	public:
 		Actor(
-			vis::GameObject gameObject = vis::GameObject(), 
+			vis::GameObject* gameObject,
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3()
 		);
@@ -43,7 +46,7 @@ namespace lgc {
 			return *this;
 		}
 
-		inline Actor& setGameObject(vis::GameObject newGO) {
+		inline Actor& setGameObject(vis::GameObject* newGO) {
 			gameObject = newGO;
 			return *this;
 		}
@@ -53,7 +56,7 @@ namespace lgc {
 			return *this;
 		}
 
-		inline const vis::GameObject& getGameObject() { return gameObject; }
+		inline vis::GameObject& getGameObject() { return *gameObject; }
 		inline const std::map<std::string, vis::Material>& getMaterials() { return materials; }
 		inline math::Vector3 getPosition() { return pos; }
 		inline math::Vector3 getRotation() { return rot; }
@@ -72,7 +75,7 @@ namespace lgc {
 
 	public:
 		Moveable(
-			vis::GameObject gameObject = vis::GameObject(),
+			vis::GameObject* gameObject = nullptr,
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3(),
 			math::Vector3 velocity = math::Vector3(),
@@ -107,7 +110,8 @@ namespace lgc {
 		rigidBodyDesc* shape;
 
 	public:
-
+		virtual void onCollide(Ship& s) = 0;
+		virtual void onCollide(Bullet& b) = 0;
 	};
 
 	class Shooter : virtual public Actor {
@@ -116,15 +120,15 @@ namespace lgc {
 		int bulletDamage;
 		bool isShooting;
 		math::Vector3 bulletVel, bulletMaxVel, bulletAccel;
-		vis::GameObject bulletModel;
+		vis::GameObject* bulletModel;
 		vis::MTL bulletMTL;
 
 	public:
 		Shooter(
-			vis::GameObject gameObject = vis::GameObject(),
+			vis::GameObject* gameObject = nullptr,
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3(),
-			vis::GameObject bulletModel = vis::GameObject(),
+			vis::GameObject* bulletModel = nullptr,
 			float shootDelayS = 0, int fps = 0
 		);
 
@@ -133,18 +137,11 @@ namespace lgc {
 		void shoot();
 
 		inline Shooter& setShooting(bool shouldShoot) { 
-			if (shouldShoot != isShooting) ticksCounter = 0;
 			isShooting = shouldShoot;
 			return *this;
 		}
 
-		inline Shooter& switchShooting() {
-			ticksCounter = 0;
-			isShooting = !isShooting;
-			return *this;
-		}
-
-		inline Shooter& setBulletGameObject(vis::GameObject bulletGO) {
+		inline Shooter& setBulletGameObject(vis::GameObject* bulletGO) {
 			bulletModel = bulletGO;
 			return *this;
 		}
@@ -182,25 +179,24 @@ namespace lgc {
 
 	};
 
-	class Ship;
-	class Bullet;
 
-	class Bullet : public Moveable {
+	class Bullet : public Moveable, public Collidable {
 	private:
 		int damage;
 
 	public:
 		Bullet(
-			int damage = 0,
-			vis::GameObject gameObject = vis::GameObject(),
+			vis::GameObject* gameObject = nullptr,
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3(),
 			math::Vector3 velocity = math::Vector3(),
 			math::Vector3 maxVel = math::Vector3(),
-			math::Vector3 acceleration = math::Vector3()
+			math::Vector3 acceleration = math::Vector3(),
+			int damage = 0
 		);
 
-		void onCollide(lgc::Ship other);
+		void onCollide(lgc::Bullet& b);
+		void onCollide(lgc::Ship& s);
 
 		inline Bullet& setDamage(int newDamage) {
 			damage = newDamage;
@@ -212,23 +208,23 @@ namespace lgc {
 		}
 	};
 
-	class Ship : public Moveable, public Shooter {
+	class Ship : public Moveable, public Shooter, public Collidable {
 	private:
 		int hp;
 	public:
 		Ship(
-			vis::GameObject gameObject = vis::GameObject(),
+			vis::GameObject* gameObject = nullptr,
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3(),
 			math::Vector3 velocity = math::Vector3(),
 			math::Vector3 maxVel = math::Vector3(),
 			math::Vector3 acceleration = math::Vector3(),
-			vis::GameObject bulletModel = vis::GameObject(),
+			vis::GameObject* bulletModel = nullptr,
 			float shootDelayS = 0, int fps = 0, int hp = 0, int damage = 0
 		);
 
-		void onCollide(lgc::Bullet other);
-		void onCollide(lgc::Ship other);
+		void onCollide(lgc::Bullet& b);
+		void onCollide(lgc::Ship& s);
 		
 		inline int getHP() { return hp; }
 		inline Ship& setHP(int newHP) {

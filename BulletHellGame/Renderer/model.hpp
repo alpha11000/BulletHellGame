@@ -49,10 +49,11 @@ namespace vis {
 			std::vector<Polygon> polygons = std::vector<Polygon>(),
 			std::vector<std::pair<int, std::string>> materialsIndexes = std::vector<std::pair<int, std::string> >(1, std::make_pair(0, std::string())));
 
-		inline std::vector<math::Vector3> getVertices() { return vertices; }
-		inline std::vector<math::Vector3> getNormals() { return normals; }
-		inline std::vector<math::Vector3> getUvCordinates() { return uvCoordinates; }
-		inline std::vector<Polygon> getPolygons() { return polygons; }
-		inline std::vector<std::pair<int, std::string>> getMaterialsIndexes() { return materialsIndexes; }
+		inline std::vector<math::Vector3>& getVertices() { return vertices; }
+		inline std::vector<math::Vector3>& getNormals() { return normals; }
+		inline std::vector<math::Vector3>& getUvCordinates() { return uvCoordinates; }
+		inline std::vector<Polygon>& getPolygons() { return polygons; }
+		inline std::vector<std::pair<int, std::string>>&
+			getMaterialsIndexes() { return materialsIndexes; }
 	};
 }

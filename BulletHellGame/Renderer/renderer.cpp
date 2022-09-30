@@ -68,22 +68,22 @@ static void setColor(vis::Material material) {
 }
 
 void Renderer::drawActor(lgc::Actor actor) {
-	vis::GameObject gameObject = actor.getGameObject();
+	vis::GameObject& gameObject = actor.getGameObject();
 
 	math::Vector3
 		pos = actor.getPosition(),
 		rot = actor.getRotation();
 
 	std::vector<math::Vector3>
-		vertices = gameObject.getVertices(),
-		normals = gameObject.getNormals(),
-		uvCordinates = gameObject.getUvCordinates();
+		&vertices = gameObject.getVertices(),
+		&normals = gameObject.getNormals(),
+		&uvCordinates = gameObject.getUvCordinates();
 
 	auto materials = actor.getMaterials();
 	vis::Material errorMaterial = vis::Material();
 
-	std::vector<vis::Polygon> polygons = gameObject.getPolygons();
-	auto materialIndexes = gameObject.getMaterialsIndexes();
+	std::vector<vis::Polygon>& polygons = gameObject.getPolygons();
+	auto& materialIndexes = gameObject.getMaterialsIndexes();
 
 	int polIndex = 0;
 	vis::Material mat = vis::Material();
@@ -96,15 +96,19 @@ void Renderer::drawActor(lgc::Actor actor) {
 	if (materialIndexes.size() > 0) {
 		matName = materialIndexes[0].second;
 
-		mat = ((materials.count(matName))) ? materials[matName] : errorMaterial;
+		mat = materials.count(matName) ? 
+			materials[matName] : 
+			errorMaterial;
 
 		if (materialIndexes.size() > 1)
 			nextMatIndex = materialIndexes[1].first;
 	}
 
 	glPushMatrix();
-	glRotatef(rot.v[1], 0, 1, 0);
 	glTranslatef(pos.v[0], pos.v[1], pos.v[2]);
+	glRotatef(rot.v[0], 1, 0, 0);
+	glRotatef(rot.v[1], 0, 1, 0);
+	glRotatef(rot.v[2], 0, 0, 1);
 
 	setColor(mat);
 
@@ -147,7 +151,8 @@ void Renderer::render() {
 
 	glColor3f(1, 1, 1);
 
-	auto player = Logic::getInstance().getPlayer();
+	auto& player = Logic::getInstance().getPlayer();
+	
 	drawActor(player);
 
 	for (auto& a : Logic::getInstance().getEnemies()) {

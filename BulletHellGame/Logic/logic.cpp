@@ -11,29 +11,24 @@ Logic::Logic() {
 	instanceID = 0;
 	num = 0;
 	
-	auto playerModel = vis::AssetsManager::getInstance().getPlayerModel();
-	auto bulletModel = vis::AssetsManager::getInstance().getBulletModel(0);
+	auto* playerModel = vis::AssetsManager::getInstance().getPlayerModel();
+	auto* bulletModel = vis::AssetsManager::getInstance().getBulletModel(0);
 
 	player = lgc::Ship();
 	player
-		.setGameObject(playerModel.first)
-		.setMaterials(playerModel.second)
+		.setGameObject(&(playerModel->first))
+		.setMaterials(playerModel->second)
 		.setRotation(0, 180, 0);
 	player
 		.setMaxVel(math::Vector3(0, 3, 0));
 	player
-		.setBulletGameObject(bulletModel.first)
-		.setBulletVel(math::Vector3(0, 0, -0.4))
+		.setBulletGameObject(&(bulletModel->first))
+		.setBulletVel(math::Vector3(0, 0, 0.4))
 		.setBulletMaxVel(math::Vector3(0, 0, 0.3))
 		.setBulletDamage(100)
-		.setShootDelay(0.2, tps);
+		.setShootDelay(0.01, tps);
 	player
 		.setHP(100);
-
-	//player = lgc::Ship(playerModel.first, math::Vector3(), math::Vector3(0, 180, 0), math::Vector3(), math::Vector3(0, 3, 0), math::Vector3(0, 0, 0), bulletModel.first, 0.1, tps, 100, 10);
-	//player.setGameObject(playerModel.first);
-	//player.setMaterials(playerModel.second);
-	//player.setBulletGameObject(bulletModel.first);
 
 	glutTimerFunc(1, updateCB, 0);
 }
@@ -48,13 +43,13 @@ void Logic::update(int val) {
 	if (num % 50 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
 		int r1 = lgc::RandomUtil::getRandomIndex(lvls, lvl, vis::AssetsManager::getInstance().getEnemiesCount());
 
-		auto enemy = vis::AssetsManager::getInstance().getEnemyModel(r1);
+		auto* enemy = vis::AssetsManager::getInstance().getEnemyModel(r1);
 
-		lgc::Ship act = lgc::Ship(enemy.first, math::Vector3(-10, 0.2, Renderer::getInstance().zmax), math::Vector3(), math::Vector3(), math::Vector3(1, 0, 0), math::Vector3(0, 0, -0.5));
+		lgc::Ship act = lgc::Ship(&enemy->first, math::Vector3(-10, 0.2, Renderer::getInstance().zmax), math::Vector3(), math::Vector3(), math::Vector3(1, 0, 0), math::Vector3(0, 0, -0.5));
 		act.setAccelerating(true);
-		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemy.second.size());
+		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemy->second.size());
 
-		act.setMaterials(enemy.second[r2]);
+		act.setMaterials(enemy->second[r2]);
 		
 		enemies.insert(std::make_pair(instanceID++, act));
 		lvl++;
@@ -94,12 +89,12 @@ void Logic::onKeysUpdate() {
 	player.setAcceleration(math::Vector3());
 
 	if (Controller::getInstance().specialIsPressed(GLUT_KEY_LEFT)) {
-		player.changeAcceleration(math::Vector3(-0.1, 0, 0));
+		player.changeAcceleration(math::Vector3(0.1, 0, 0));
 		player.setAccelerating(true);
 	}
 
 	if (Controller::getInstance().specialIsPressed(GLUT_KEY_RIGHT)) {
-		player.changeAcceleration(math::Vector3(0.1, 0, 0));
+		player.changeAcceleration(math::Vector3(-0.1, 0, 0));
 		player.setAccelerating(true);
 	}
 
