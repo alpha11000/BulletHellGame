@@ -15,8 +15,8 @@ lgc::Actor::Actor(
 
 void lgc::Actor::onUpdate() {
 	if (
-		pos[2] > Renderer::getInstance().zmax + 5 ||
-		pos[2] < -5
+		pos[2] > Renderer::getInstance().zmax + 20 ||
+		pos[2] < -10
 	) removeable = true;
 }
 

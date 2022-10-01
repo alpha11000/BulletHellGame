@@ -9,6 +9,7 @@
 class Renderer {
 public:
 	int W, H, zmax, fps, ms;
+	float fov, camy;
 	vis::GameObject error_GO = vis::GameObject();
 	std::map<std::string, vis::Material> error_mats = std::map<std::string, vis::Material>();
 

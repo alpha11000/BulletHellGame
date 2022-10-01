@@ -56,24 +56,24 @@ void Logic::update(int val) {
 
 		int r1 = lgc::RandomUtil::getRandomIndex(lvls, lvl, vis::AssetsManager::getInstance().getEnemiesCount());
 
-		auto* enemy = vis::AssetsManager::getInstance().getEnemyModel(r1);
+		auto* enemyModel = vis::AssetsManager::getInstance().getEnemyModel(r1);
 		auto* bulletModel = vis::AssetsManager::getInstance().getBulletModel(0);
 
-		lgc::Ship* act = new lgc::Ship();
-		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemy->second.size());
+		lgc::Ship* enemy = new lgc::Ship();
+		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemyModel->second.size());
 
-		act
-			->setGameObject(&(enemy->first))
-			.setMaterials(&(enemy->second[r2]))
+		enemy
+			->setGameObject(&(enemyModel->first))
+			.setMaterials(&(enemyModel->second[r2]))
 			.setRotation(0, 0, 0)
 			.setPosition(-10, 0.2, Renderer::getInstance().zmax);
-		act
+		enemy
 			->setMaxVel(math::Vector3(0, 0.2, 0))
 			.setAcceleration(math::Vector3(0, 0, -0.2))
 			.setAccelerating(true);
-		act
+		enemy
 			->setHitbox(CollisionSolver.getShipHitbox());
-		act
+		enemy
 			->setBulletGameObject(&(bulletModel->first))
 			.setBulletHitbox(CollisionSolver.getBulletHitbox())
 			.setBulletVel(math::Vector3(0, 0, -0.8))
@@ -82,11 +82,11 @@ void Logic::update(int val) {
 			.setShootDelay(0.5, tps)
 			.setShooting(true)
 			.setIsAlly(false);
-		act
+		enemy
 			->setHP(10);
 		
-		enemies.insert(std::make_pair(instanceID++, act));
-		CollisionSolver.insertCollidable(act);
+		enemies.insert(std::make_pair(instanceID++, enemy));
+		CollisionSolver.insertCollidable(enemy);
 		lvl++;
 	}
 
@@ -102,7 +102,7 @@ void Logic::update(int val) {
 		act.setAccelerating(true);
 		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, env->second.size());
 
-		float xPos = (r1 < vis::AssetsManager::getInstance().getFixedEnviromentXIndex()) ?
+		float xPos = r1 < vis::AssetsManager::getInstance().getFixedEnviromentXIndex() ?
 			lgc::RandomUtil::getRandom(xMin, xMax) :
 			0;
 
@@ -145,18 +145,19 @@ void Logic::update(int val) {
 
 	for (int i : disableds)
 		bullets.erase(i);
-	}
+
+	disableds.clear();
 
 	//enviroment update
 	for (auto& kv : enviroment) {
 		kv.second.onUpdate();
 
-		if (kv.second.isRemoveable()) disableds.insert(kv.first);
+		if (kv.second.isRemoveable()) 
+			disableds.insert(kv.first);
 	}
 
-	for (int i : disableds) {
+	for (int i : disableds)
 		enemies.erase(i);
-	}
 
 	disableds.clear();
 

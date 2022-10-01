@@ -3,6 +3,7 @@
 
 Renderer::Renderer() {
 	W = 800, H = 600, zmax = 120;
+	fov = 90, camy = 20;
 	fps = 60, ms = 1000 / fps;
 	
 	vis::AssetsManager::getInstance();
@@ -155,7 +156,7 @@ void Renderer::render() {
 
 	drawActor(&Logic::getInstance().getPlayer());
 	Logic::getInstance().getPlayer()._renderHitbox();
-	drawActor(Logic::getInstance().getFloor());
+	drawActor(&Logic::getInstance().getFloor());
 
 	for (auto& a : Logic::getInstance().getEnemies()) {
 		if (a.second->isRemoveable()) continue;
@@ -171,7 +172,7 @@ void Renderer::render() {
 
 	for (auto& e : Logic::getInstance().getEnviroment()) {
 		if (e.second.isRemoveable()) continue;
-		drawActor(e.second);
+		drawActor(&e.second);
 	}
 
 	glutSwapBuffers();
@@ -182,12 +183,8 @@ void Renderer::reshape(int w, int h) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	float fov = 90.f;
-	float zs = zmax;
-	float camy = 30.f;
-
-	float raio = std::sqrt((zs * zs) + (camy * camy));
-	float a = (std::acos(zs / raio) * 180 / math::pi);
+	float raio = std::sqrt((zmax * zmax) + (camy * camy));
+	float a = (std::acos(zmax / raio) * 180 / math::pi);
 
 	float total_angle = camy < 0 ? a + fov / 2 : -(a + fov / 2);
 
