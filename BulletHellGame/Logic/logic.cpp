@@ -22,7 +22,7 @@ Logic::Logic() {
 	player
 		.setMaxVel(math::Vector3(0, 3, 0));
 	player
-		.setHitbox(CollisionSolver.getShipHitbox());
+		.setHitbox(CollisionSolver.getPlayerHitbox());
 	player
 		.setBulletGameObject(&(bulletModel->first))
 		.setBulletHitbox(CollisionSolver.getBulletHitbox())
@@ -43,7 +43,6 @@ void Logic::addBullet(lgc::Bullet *bullet, bool isAlly) {
 
 void Logic::update(int val) {
 	num++;
-
 	if (num % 300 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
 		int r1 = lgc::RandomUtil::getRandomIndex(lvls, lvl, vis::AssetsManager::getInstance().getEnemiesCount());
 
@@ -112,7 +111,7 @@ void Logic::update(int val) {
 
 	for (int i : disableds)
 		bullets.erase(i);
-
+	
 	glutTimerFunc(ms, updateCB, 0);
 }
 

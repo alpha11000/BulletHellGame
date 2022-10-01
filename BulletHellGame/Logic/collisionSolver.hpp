@@ -29,6 +29,7 @@ namespace lgc {
 
 	class collisionSolver {
 	private:
+		rbAABB player;
 		rbAABB ship;
 		rbAABB bullet;
 
@@ -46,6 +47,7 @@ namespace lgc {
 		void insertCollidable(Ship* s);
 		void insertCollidable(Bullet* b, bool isAlly);
 
+		inline rbAABB* getPlayerHitbox() { return &player; }
 		inline rbAABB* getShipHitbox() { return &ship; }
 		inline rbAABB* getBulletHitbox() { return &bullet; }
 		void clearRemoveables();

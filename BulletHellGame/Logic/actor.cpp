@@ -200,7 +200,6 @@ void lgc::Bullet::onCollide(lgc::Bullet& b) {}
 
 void lgc::Bullet::onCollide(lgc::Ship& s) {
 	removeable = true;
-	std::cout << "bullet x ship\n";
 }
 
 
@@ -221,12 +220,11 @@ lgc::Ship::Ship(
 	hp(hp),
 	Collidable(shape, gameObject, position, rotation) {
 	setBulletMaxVel(maxVel);
+	hp_buffer = 0;
 }
 
 void lgc::Ship::onCollide(lgc::Bullet& b) {
 	hp_buffer -= b.getDamage();
-	std::cout << "bullet x ship\n";
-	b.onCollide(*this);
 }
 
 void lgc::Ship::onCollide(lgc::Ship& s) {

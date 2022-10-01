@@ -6,20 +6,21 @@ bool lgc::rbAABB::testCollision(Collidable& c1, Collidable& c2) {
  auto c1min = c1.getMin(), c1max = c1.getMax();
  auto c2min = c2.getMin(), c2max = c2.getMax();
 
- if (c1min[0] <= c2max[0] &&
+ return(
+	 c1min[0] <= c2max[0] &&
 	 c2min[0] <= c1max[0] &&
 	 c1min[1] <= c2max[1] &&
 	 c2min[1] <= c1max[1] &&
 	 c1min[2] <= c2max[2] &&
 	 c2min[2] <= c1max[2]
-	 ) return true;
- return false;
+	 );
 }
 
 
 lgc::collisionSolver::collisionSolver() :
 	ship(rbAABB(1.5, 1.5, 1.5)),
-	bullet(rbAABB(0.3, 0.3, 0.6)) {}
+	bullet(rbAABB(0.3, 0.3, 0.6)),
+	player(rbAABB(3, 3, 3)) {}
 
 void lgc::collisionSolver::sortActorLists() {
 	std::sort(enemies.begin(), enemies.end(), [&](auto& s1, auto& s2) {
@@ -78,7 +79,8 @@ void lgc::collisionSolver::runCollisions() {
 	auto& player = Logic::getInstance().getPlayer();
 
 	for (unsigned int i = 0; i < enemyBullets.size(); i++) {
-		if (enemyBullets[i]->getMin()[axis] > player.getMin()[axis]) continue;
+		if (enemyBullets[i]->getMin()[axis] > player.getMax()[axis] ||
+			enemyBullets[i]->getMax()[axis] < player.getMin()[axis]) continue;
 
 		if (rbAABB::testCollision(*enemyBullets[i], player)) {
 			player.onCollide(*enemyBullets[i]);
@@ -88,7 +90,7 @@ void lgc::collisionSolver::runCollisions() {
 
 	// player x enemies
 	for (unsigned int i = 0; i < enemies.size(); i++) {
-		if (enemies[i]->getMin()[axis] > player.getMin()[axis]) continue;
+		if (enemies[i]->getMin()[axis] > player.getMax()[axis] ) continue;
 
 		if (rbAABB::testCollision(*enemies[i], player)) {
 			player.onCollide(*enemies[i]);
