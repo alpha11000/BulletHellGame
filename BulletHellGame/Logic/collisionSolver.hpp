@@ -1,34 +1,54 @@
 #pragma once
+#include <vector>
+#include <memory>
+
+#include "actor.hpp"
 #include "../Util/math.hpp"
 
 namespace lgc {
-	class rigidBodyDesc {
-	protected:
-		math::Vector3 center;
-
-		inline rigidBodyDesc(math::Vector3 center) :
-			center(center) {}
-	};
-
-	class rbSphere : protected rigidBodyDesc {
-		float radius;
-	
-	public:
-		inline rbSphere(float radius = 0, math::Vector3 center = math::Vector3()) :
-			radius(radius), rigidBodyDesc(center) {}
-
-	};
-
-	class rbAABB : protected rigidBodyDesc {
+	class rbAABB {
+		math::Vector3 nBounds;
 		math::Vector3 bounds;
 
 	public:
-		inline rbAABB(float dx, float dy, float dz, math::Vector3 center = math::Vector3()) :
-			bounds(math::Vector3(dx, dy, dz)), rigidBodyDesc(center) {}
+		static bool testCollision(Collidable& c1, Collidable& c2);
 
+		inline rbAABB(float dx, float dy, float dz) :
+			bounds(math::Vector3(std::abs(dx), std::abs(dy), std::abs(dz))) {
+			nBounds = math::Vector3(-bounds[0], -bounds[1], -bounds[2]);
+		}
+
+		inline math::Vector3 getMinDisp() {
+			return nBounds;
+		}
+
+		inline math::Vector3 getMaxDisp() {
+			return bounds;
+		}
 	};
 
 	class collisionSolver {
+	private:
+		rbAABB ship;
+		rbAABB bullet;
+
+		std::vector< Ship* > enemies;
+		std::vector< Bullet* > allyBullets;
+		std::vector< Bullet* > enemyBullets;
+		
+		int axis = 2;
+
+		void sortActorLists();
+	public:
+		collisionSolver();
+
+		void runCollisions();
+		void insertCollidable(Ship* s);
+		void insertCollidable(Bullet* b, bool isAlly);
+
+		inline rbAABB* getShipHitbox() { return &ship; }
+		inline rbAABB* getBulletHitbox() { return &bullet; }
+		void clearRemoveables();
 
 	};
 }

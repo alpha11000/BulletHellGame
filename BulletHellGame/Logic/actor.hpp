@@ -3,9 +3,9 @@
 #include <map>
 #include "../Util/math.hpp"
 #include "../Renderer/model.hpp"
-#include "collisionSolver.hpp"
 
 namespace lgc {
+	class rbAABB;
 	class Ship;
 	class Bullet;
 
@@ -107,21 +107,42 @@ namespace lgc {
 
 	class Collidable : virtual public Actor {
 	protected:
-		rigidBodyDesc* shape;
+		rbAABB* shape;
+		math::Vector3 min, max;
 
 	public:
-		virtual void onCollide(Ship& s) = 0;
-		virtual void onCollide(Bullet& b) = 0;
+		Collidable(
+			rbAABB* shape = nullptr,
+			vis::GameObject* gameObject = nullptr,
+			math::Vector3 position = math::Vector3(),
+			math::Vector3 rotation = math::Vector3()
+		);
+
+		inline Collidable& setHitbox(rbAABB* newShape) {
+			shape = newShape;
+			return *this;
+		}
+
+		void updateHitbox();
+		void onUpdate();
+
+		void _renderHitbox();
+		inline math::Vector3 getMin() { return min; }
+		inline math::Vector3 getMax() { return max; }
+
+		inline virtual void onCollide(Ship& s) {};
+		inline virtual void onCollide(Bullet& b) {};
 	};
 
 	class Shooter : virtual public Actor {
 	protected:
-		int shootRate, shootDelayS, ticksCounter;
-		int bulletDamage;
-		bool isShooting;
+		int shootRate, ticksCounter, bulletDamage;
+		float shootDelayS;
+		bool isShooting, isAlly;
 		math::Vector3 bulletVel, bulletMaxVel, bulletAccel;
 		vis::GameObject* bulletModel;
-		vis::MTL bulletMTL;
+		rbAABB* bulletHitbox;
+		vis::MTL* bulletMTL;
 
 	public:
 		Shooter(
@@ -129,6 +150,7 @@ namespace lgc {
 			math::Vector3 position = math::Vector3(),
 			math::Vector3 rotation = math::Vector3(),
 			vis::GameObject* bulletModel = nullptr,
+			rbAABB* bulletHitBox = nullptr,
 			float shootDelayS = 0, int fps = 0
 		);
 
@@ -146,8 +168,13 @@ namespace lgc {
 			return *this;
 		}
 
-		inline Shooter& setBulletGameObject(vis::MTL newBulletMTL) {
+		inline Shooter& setBulletMaterial(vis::MTL* newBulletMTL) {
 			bulletMTL = newBulletMTL;
+			return *this;
+		}
+
+		inline Shooter& setBulletHitbox(rbAABB* newBulletHitbox) {
+			bulletHitbox = newBulletHitbox;
 			return *this;
 		}
 
@@ -173,7 +200,12 @@ namespace lgc {
 
 		inline Shooter& setShootDelay(float newShootDelaySeconds, int fps) {
 			shootDelayS = newShootDelaySeconds;
-			shootRate = (float)newShootDelaySeconds * fps;
+			shootRate = newShootDelaySeconds * fps;
+			return *this;
+		}
+
+		inline Shooter& setIsAlly(bool newIsAlly) {
+			isAlly = newIsAlly;
 			return *this;
 		}
 
@@ -192,8 +224,11 @@ namespace lgc {
 			math::Vector3 velocity = math::Vector3(),
 			math::Vector3 maxVel = math::Vector3(),
 			math::Vector3 acceleration = math::Vector3(),
-			int damage = 0
+			int damage = 0,
+			rbAABB* shape = nullptr
 		);
+
+		void onUpdate();
 
 		void onCollide(lgc::Bullet& b);
 		void onCollide(lgc::Ship& s);
@@ -210,7 +245,7 @@ namespace lgc {
 
 	class Ship : public Moveable, public Shooter, public Collidable {
 	private:
-		int hp;
+		int hp, hp_buffer;
 	public:
 		Ship(
 			vis::GameObject* gameObject = nullptr,
@@ -220,7 +255,9 @@ namespace lgc {
 			math::Vector3 maxVel = math::Vector3(),
 			math::Vector3 acceleration = math::Vector3(),
 			vis::GameObject* bulletModel = nullptr,
-			float shootDelayS = 0, int fps = 0, int hp = 0, int damage = 0
+			rbAABB* bulletHitbox = nullptr,
+			float shootDelayS = 0, int fps = 0, int hp = 0, int damage = 0,
+			rbAABB* shape = nullptr
 		);
 
 		void onCollide(lgc::Bullet& b);

@@ -22,7 +22,10 @@ Logic::Logic() {
 	player
 		.setMaxVel(math::Vector3(0, 3, 0));
 	player
+		.setHitbox(CollisionSolver.getShipHitbox());
+	player
 		.setBulletGameObject(&(bulletModel->first))
+		.setBulletHitbox(CollisionSolver.getBulletHitbox())
 		.setBulletVel(math::Vector3(0, 0, 0.4))
 		.setBulletMaxVel(math::Vector3(0, 0, 0.3))
 		.setBulletDamage(100)
@@ -33,53 +36,82 @@ Logic::Logic() {
 	glutTimerFunc(1, updateCB, 0);
 }
 
-void Logic::addBullet(lgc::Bullet bullet) {
+void Logic::addBullet(lgc::Bullet *bullet, bool isAlly) {
 	bullets.insert(std::make_pair(instanceID++, bullet));
+	CollisionSolver.insertCollidable(bullets[instanceID - 1], isAlly);
 }
 
 void Logic::update(int val) {
 	num++;
 
-	if (num % 50 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
+	if (num % 300 == 0 && vis::AssetsManager::getInstance().getEnemiesCount() > 0) {
 		int r1 = lgc::RandomUtil::getRandomIndex(lvls, lvl, vis::AssetsManager::getInstance().getEnemiesCount());
 
 		auto* enemy = vis::AssetsManager::getInstance().getEnemyModel(r1);
+		auto* bulletModel = vis::AssetsManager::getInstance().getBulletModel(0);
 
-		lgc::Ship act = lgc::Ship(&enemy->first, math::Vector3(-10, 0.2, Renderer::getInstance().zmax), math::Vector3(), math::Vector3(), math::Vector3(1, 0, 0), math::Vector3(0, 0, -0.5));
-		act.setAccelerating(true);
+		lgc::Ship* act = new lgc::Ship();
 		int r2 = lgc::RandomUtil::getRandomIndex(lvls, lvl, enemy->second.size());
 
-		act.setMaterials(&enemy->second[r2]);
+		act
+			->setGameObject(&(enemy->first))
+			.setMaterials(&(enemy->second[r2]))
+			.setRotation(0, 0, 0)
+			.setPosition(-10, 0.2, Renderer::getInstance().zmax);
+		act
+			->setMaxVel(math::Vector3(0, 0.2, 0))
+			.setAcceleration(math::Vector3(0, 0, -0.2))
+			.setAccelerating(true);
+		act
+			->setHitbox(CollisionSolver.getShipHitbox());
+		act
+			->setBulletGameObject(&(bulletModel->first))
+			.setBulletHitbox(CollisionSolver.getBulletHitbox())
+			.setBulletVel(math::Vector3(0, 0, -0.8))
+			.setBulletMaxVel(math::Vector3(0, 0, 0.8))
+			.setBulletDamage(100)
+			.setShootDelay(0.5, tps)
+			.setShooting(true)
+			.setIsAlly(false);
+		act
+			->setHP(10);
 		
 		enemies.insert(std::make_pair(instanceID++, act));
+		CollisionSolver.insertCollidable(act);
 		lvl++;
 	}
 
 	player.onUpdate();
 
+	for (auto& kv : bullets)
+		kv.second->onUpdate();
+
+	for (auto& kv : enemies)
+		kv.second->onUpdate();
+
 	std::set<int> disableds;
 
-	for (auto& kv : enemies) {
-		kv.second.onUpdate();
+	CollisionSolver.runCollisions();
 
-		if (kv.second.isRemoveable()) disableds.insert(kv.first);
-	}
+	for (auto& kv : enemies)
+		if (kv.second->isRemoveable()) {
+			disableds.insert(kv.first);
+			delete kv.second;
+		}
 	
-	for (int i : disableds) {
+	for (int i : disableds)
 		enemies.erase(i);
-	}
 
 	disableds.clear();
 
-	for (auto& kv : bullets) {
-		kv.second.onUpdate();
+	for (auto& kv : bullets)
+		if (kv.second->isRemoveable()) {
+			disableds.insert(kv.first);
+			delete kv.second;
+		}
 
-		if (kv.second.isRemoveable()) disableds.insert(kv.first);
-	}
-
-	for (int i : disableds) {
+	for (int i : disableds)
 		bullets.erase(i);
-	}
 
 	glutTimerFunc(ms, updateCB, 0);
 }

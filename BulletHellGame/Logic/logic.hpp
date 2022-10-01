@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Renderer/renderer.hpp"
+#include "collisionSolver.hpp"
 #include "actor.hpp"
 #include <map>
 
@@ -12,8 +13,8 @@ private:
 	int instanceID;
 
 	lgc::Ship player;
-	std::map<int, lgc::Ship> enemies;
-	std::map<int, lgc::Bullet> bullets;
+	std::map<int, lgc::Ship*> enemies;
+	std::map<int, lgc::Bullet*> bullets;
 	
 	Logic();
 	Logic(const Logic&) = delete;
@@ -21,12 +22,14 @@ private:
 	Logic(Logic&&) = delete;
 	Logic& operator=(Logic&&) = delete;
 
+	lgc::collisionSolver CollisionSolver;
+
 public:
 	inline auto& getPlayer() { return player; }
 	inline auto& getEnemies() { return enemies; }
 	inline auto& getBullets() { return bullets; }
 
-	void addBullet(lgc::Bullet bullet);
+	void addBullet(lgc::Bullet *bullet, bool isAlly = true);
 
 	void update(int val);
 	void onKeysUpdate();

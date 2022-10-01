@@ -23,7 +23,7 @@ public:
 	void render();
 	void reshape(int w, int h);
 
-	void drawActor(lgc::Actor actor);
+	void drawActor(lgc::Actor* actor);
 	static Renderer& getInstance();
 	void requestRender();
 };

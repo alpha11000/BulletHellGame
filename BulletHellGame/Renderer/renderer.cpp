@@ -2,7 +2,7 @@
 #include "../Logic/logic.hpp"
 
 Renderer::Renderer() {
-	W = 800, H = 600, zmax = 60;
+	W = 800, H = 600, zmax = 120;
 	fps = 60, ms = 1000 / fps;
 	
 	vis::AssetsManager::getInstance();
@@ -67,19 +67,19 @@ static void setColor(vis::Material material) {
 	glMateriali(GL_FRONT, GL_SHININESS, material.brightness);
 }
 
-void Renderer::drawActor(lgc::Actor actor) {
-	vis::GameObject& gameObject = actor.getGameObject();
+void Renderer::drawActor(lgc::Actor* actor) {
+	vis::GameObject& gameObject = actor->getGameObject();
 
 	math::Vector3
-		pos = actor.getPosition(),
-		rot = actor.getRotation();
+		pos = actor->getPosition(),
+		rot = actor->getRotation();
 
 	std::vector<math::Vector3>
 		&vertices = gameObject.getVertices(),
 		&normals = gameObject.getNormals(),
 		&uvCordinates = gameObject.getUvCordinates();
 
-	auto& materials = actor.getMaterials();
+	auto& materials = actor->getMaterials();
 	vis::Material errorMaterial = vis::Material();
 
 	std::vector<vis::Polygon>& polygons = gameObject.getPolygons();
@@ -151,18 +151,19 @@ void Renderer::render() {
 
 	glColor3f(1, 1, 1);
 
-	auto& player = Logic::getInstance().getPlayer();
-	
-	drawActor(player);
+	drawActor(&Logic::getInstance().getPlayer());
+	Logic::getInstance().getPlayer()._renderHitbox();
 
 	for (auto& a : Logic::getInstance().getEnemies()) {
-		if (a.second.isRemoveable()) continue;
+		if (a.second->isRemoveable()) continue;
 		drawActor(a.second);
+		a.second->_renderHitbox();
 	}
 
 	for (auto& b : Logic::getInstance().getBullets()) {
-		if (b.second.isRemoveable()) continue;
+		if (b.second->isRemoveable()) continue;
 		drawActor(b.second);
+		b.second->_renderHitbox();
 	}
 
 	glutSwapBuffers();
@@ -175,7 +176,7 @@ void Renderer::reshape(int w, int h) {
 
 	float fov = 90.f;
 	float zs = zmax;
-	float camy = 20.f;
+	float camy = 30.f;
 
 	float raio = std::sqrt((zs * zs) + (camy * camy));
 	float a = (std::acos(zs / raio) * 180 / math::pi);
