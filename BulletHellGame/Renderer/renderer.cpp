@@ -102,6 +102,8 @@ void Renderer::drawActor(lgc::Actor* actor) {
 
 		if (materialIndexes.size() > 1)
 			nextMatIndex = materialIndexes[1].first;
+		else
+			nextMatIndex = polygons.size();
 	}
 
 	glPushMatrix();
@@ -153,6 +155,7 @@ void Renderer::render() {
 
 	drawActor(&Logic::getInstance().getPlayer());
 	Logic::getInstance().getPlayer()._renderHitbox();
+	drawActor(Logic::getInstance().getFloor());
 
 	for (auto& a : Logic::getInstance().getEnemies()) {
 		if (a.second->isRemoveable()) continue;
@@ -164,6 +167,11 @@ void Renderer::render() {
 		if (b.second->isRemoveable()) continue;
 		drawActor(b.second);
 		b.second->_renderHitbox();
+	}
+
+	for (auto& e : Logic::getInstance().getEnviroment()) {
+		if (e.second.isRemoveable()) continue;
+		drawActor(e.second);
 	}
 
 	glutSwapBuffers();

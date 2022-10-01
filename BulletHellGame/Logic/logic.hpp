@@ -9,10 +9,13 @@ class Logic {
 private:
 	int tps, ms;
 	int lvl, lvls;
-	int num;
-	int instanceID;
+	unsigned long long instanceID;
+
+	int xMin = -50, xMax = 50;
 
 	lgc::Ship player;
+	lgc::Actor floor;
+	std::map<int, lgc::Moveable> enviroment;
 	std::map<int, lgc::Ship*> enemies;
 	std::map<int, lgc::Bullet*> bullets;
 	
@@ -26,6 +29,8 @@ private:
 
 public:
 	inline auto& getPlayer() { return player; }
+	inline auto& getFloor() { return floor; }
+	inline auto& getEnviroment() { return enviroment; }
 	inline auto& getEnemies() { return enemies; }
 	inline auto& getBullets() { return bullets; }
 

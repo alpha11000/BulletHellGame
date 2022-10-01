@@ -1,6 +1,7 @@
 #include "model.hpp"
 
 vis::Material::Material(std::string name, float r, float g, float b, float a) {
+	this->name = name;
 	difuse[0] = r;
 	difuse[1] = g;
 	difuse[2] = b;
