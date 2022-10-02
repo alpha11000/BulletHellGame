@@ -2,8 +2,8 @@
 #include "../Logic/logic.hpp"
 
 Renderer::Renderer() {
-	W = 800, H = 600, zmax = 120;
-	fov = 90, camy = 20;
+	W = 800, H = 600, zmax = 80;
+	fov = 90, camy = 15;
 	fps = 60, ms = 1000 / fps;
 	
 	vis::AssetsManager::getInstance();
@@ -186,7 +186,6 @@ void Renderer::reshape(int w, int h) {
 
 	float raio = std::sqrt((zmax * zmax) + (camy * camy));
 	float a = (std::acos(zmax / raio) * 180 / math::pi);
-
 	float total_angle = camy < 0 ? a + fov / 2 : -(a + fov / 2);
 
 	gluPerspective(fov, w / (double)h, 1.0, 1000);

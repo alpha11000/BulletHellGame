@@ -25,4 +25,10 @@ namespace lgc {
 			return n;
 		}
 	};
+
+	class RandomGen {
+	public:
+		//static std::vector<int> generateNormalVector(int )
+		// https://stackoverflow.com/questions/13091249/distribute-number-over-a-bell-curve
+	};
 }

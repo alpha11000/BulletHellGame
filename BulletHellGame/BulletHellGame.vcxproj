@@ -151,6 +151,7 @@
     <ClCompile Include="Control\controller.cpp" />
     <ClCompile Include="Logic\actor.cpp" />
     <ClCompile Include="Logic\collisionSolver.cpp" />
+    <ClCompile Include="Logic\instanceManager.cpp" />
     <ClCompile Include="Logic\logic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Util\math.cpp" />

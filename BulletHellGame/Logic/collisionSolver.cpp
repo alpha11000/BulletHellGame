@@ -17,10 +17,11 @@ bool lgc::rbAABB::testCollision(Collidable& c1, Collidable& c2) {
 }
 
 
-lgc::collisionSolver::collisionSolver() :
-	ship(rbAABB(1.0, 1.0, 1.0)),
-	bullet(rbAABB(0.3, 0.3, 0.6)),
-	player(rbAABB(2.f, 1.3f, 2.f)) {}
+lgc::rbAABB lgc::collisionSolver::ship = lgc::rbAABB(1.0, 1.0, 1.0);
+lgc::rbAABB lgc::collisionSolver::bullet = lgc::rbAABB(0.3, 0.3, 0.6);
+lgc::rbAABB lgc::collisionSolver::player = lgc::rbAABB(2.f, 1.3f, 2.f);
+
+lgc::collisionSolver::collisionSolver() {}
 
 void lgc::collisionSolver::sortActorLists() {
 	std::sort(enemies.begin(), enemies.end(), [&](auto& s1, auto& s2) {

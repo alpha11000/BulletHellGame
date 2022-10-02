@@ -248,7 +248,7 @@ namespace lgc {
 
 	class Ship : public Moveable, public Shooter, public Collidable {
 	private:
-		int hp, hp_buffer;
+		int hp, hp_buffer, score;
 	public:
 		Ship(
 			vis::GameObject* gameObject = nullptr,
@@ -265,10 +265,18 @@ namespace lgc {
 
 		void onCollide(lgc::Bullet& b);
 		void onCollide(lgc::Ship& s);
+
+		void onDeath();
 		
 		inline int getHP() { return hp; }
+
 		inline Ship& setHP(int newHP) {
 			hp = newHP;
+			return *this;
+		}
+
+		inline Ship& setScore(int newScore) {
+			score = newScore;
 			return *this;
 		}
 

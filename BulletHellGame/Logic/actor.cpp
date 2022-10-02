@@ -133,7 +133,8 @@ lgc::Shooter::Shooter(
 	shootDelayS(shootDelayS),
 	bulletModel(bulletModel),
 	bulletHitbox(bulletHitbox),
-	ticksCounter(0), isShooting(false), bulletDamage(0)
+	ticksCounter(0), isShooting(false),
+	isAlly(true), bulletDamage(0), bulletMTL(nullptr)
 {
 	shootRate = shootDelayS * fps;
 	bulletVel = bulletAccel = math::Vector3();
@@ -217,11 +218,20 @@ void lgc::Ship::onCollide(lgc::Ship& s) {
 	hp_buffer -= s.getHP();
 }
 
+void lgc::Ship::onDeath() {
+	Logic::getInstance().addScore(score);
+}
+
 void lgc::Ship::onUpdate() {
 	move();
 	updateHitbox();
 	shoot();
+
 	hp += hp_buffer, hp_buffer = 0;
-	if (hp <= 0) removeable = true;
+	if (hp <= 0) {
+		onDeath();
+		removeable = true;
+	}
+
 	Actor::onUpdate();
 }

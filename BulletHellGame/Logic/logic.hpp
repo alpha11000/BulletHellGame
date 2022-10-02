@@ -9,32 +9,59 @@ class Logic {
 private:
 	int tps, ms;
 	int lvl, lvls;
-	unsigned long long instanceID;
+	int score;
 
+	lgc::collisionSolver CollisionSolver;
+
+	struct instanceManager {
+	public:
+		int tps;
+
+		lgc::Ship player;
+		lgc::Actor floor;
+		std::map<unsigned int, lgc::Moveable> enviroment;
+		std::map<unsigned int, lgc::Ship*> enemies;
+		std::map<unsigned int, lgc::Bullet*> bullets;
+
+		unsigned int instanceID;
+
+		instanceManager();
+
+		lgc::Ship* createEnemy(int r1, int r2);
+
+		void addInstance(lgc::Ship* s);
+		void addInstance(lgc::Bullet* b, bool isAlly = true);
+
+		void updateInstances();
+		void clearRemoveables();
+	};
+
+	instanceManager InstanceManager;
 	int xMin = -50, xMax = 50;
 
-	lgc::Ship player;
-	lgc::Actor floor;
-	std::map<int, lgc::Moveable> enviroment;
-	std::map<int, lgc::Ship*> enemies;
-	std::map<int, lgc::Bullet*> bullets;
-	
 	Logic();
 	Logic(const Logic&) = delete;
 	Logic& operator=(const Logic&) = delete;
 	Logic(Logic&&) = delete;
 	Logic& operator=(Logic&&) = delete;
-
-	lgc::collisionSolver CollisionSolver;
-
+	
 public:
-	inline auto& getPlayer() { return player; }
-	inline auto& getFloor() { return floor; }
-	inline auto& getEnviroment() { return enviroment; }
-	inline auto& getEnemies() { return enemies; }
-	inline auto& getBullets() { return bullets; }
+	void generateScenario();
 
-	void addBullet(lgc::Bullet *bullet, bool isAlly = true);
+	inline auto& getPlayer() { return InstanceManager.player; }
+	inline auto& getFloor() { return InstanceManager.floor; }
+	inline auto& getEnviroment() { return InstanceManager.enviroment; }
+	inline auto& getEnemies() { return InstanceManager.enemies; }
+	inline auto& getBullets() { return InstanceManager.bullets; }
+
+	inline void addBullet(lgc::Bullet* b, bool isAlly = true) {
+		InstanceManager.addInstance(b, isAlly);
+	}
+
+	inline void addScore(int incr) {
+		score += incr;
+		std::cout << "score: " << score << "\n";
+	}
 
 	void update(int val);
 	void onKeysUpdate();
@@ -43,3 +70,4 @@ public:
 };
 
 void updateCB(int val);
+void genScenarioCB(int val);

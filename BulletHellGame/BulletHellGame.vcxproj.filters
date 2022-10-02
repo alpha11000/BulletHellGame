@@ -42,6 +42,9 @@
     <ClCompile Include="Logic\collisionSolver.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\instanceManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logic\actor.hpp">

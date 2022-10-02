@@ -20,8 +20,10 @@ void vis::AssetsManager::loadModels() {
 	enviromentFixedXIndex = enviroment.size();
 	loadModel("props/street", ENVIROMENT);
 
-	loadModel("av1", ENEMY);
-	loadModel("av2", ENEMY);
+	loadModel("thunder", ENEMY);
+	loadModel("xWings", ENEMY);
+	loadModel("faxx", ENEMY);
+
 	loadModel("bullet1", BULLET);
 }
 
