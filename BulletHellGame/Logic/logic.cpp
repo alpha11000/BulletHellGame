@@ -26,6 +26,7 @@ Logic::Logic() {
 		.setHitbox(CollisionSolver.getPlayerHitbox());
 	player
 		.setBulletGameObject(&(bulletModel->first))
+		.setBulletMaterial(&(bulletModel->second[0]))
 		.setBulletHitbox(CollisionSolver.getBulletHitbox())
 		.setBulletVel(math::Vector3(0, 0, 0.4))
 		.setBulletMaxVel(math::Vector3(0, 0, 0.3))
@@ -75,6 +76,7 @@ void Logic::update(int val) {
 			->setHitbox(CollisionSolver.getShipHitbox());
 		enemy
 			->setBulletGameObject(&(bulletModel->first))
+			.setBulletMaterial(&bulletModel->second[1])
 			.setBulletHitbox(CollisionSolver.getBulletHitbox())
 			.setBulletVel(math::Vector3(0, 0, -0.8))
 			.setBulletMaxVel(math::Vector3(0, 0, 0.8))

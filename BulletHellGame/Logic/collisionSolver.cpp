@@ -18,9 +18,9 @@ bool lgc::rbAABB::testCollision(Collidable& c1, Collidable& c2) {
 
 
 lgc::collisionSolver::collisionSolver() :
-	ship(rbAABB(1.5, 1.5, 1.5)),
+	ship(rbAABB(1.0, 1.0, 1.0)),
 	bullet(rbAABB(0.3, 0.3, 0.6)),
-	player(rbAABB(3, 3, 3)) {}
+	player(rbAABB(2.f, 1.3f, 2.f)) {}
 
 void lgc::collisionSolver::sortActorLists() {
 	std::sort(enemies.begin(), enemies.end(), [&](auto& s1, auto& s2) {
@@ -28,7 +28,7 @@ void lgc::collisionSolver::sortActorLists() {
 	});
 
 	std::sort(allyBullets.begin(), allyBullets.end(), [&](auto& b1, auto& b2) {
-		return b1->getMin()[axis] < b2->getMin()[axis];
+		return b1->getMin()[axis] > b2->getMin()[axis];
 	});
 
 	std::sort(enemyBullets.begin(), enemyBullets.end(), [&](auto& b1, auto& b2) {
@@ -43,18 +43,13 @@ void lgc::collisionSolver::runCollisions() {
 	// enemies x ally bullets
 	int nextZMin = 0;
 	for (unsigned int i = 0; i < allyBullets.size(); i++) {
-		bool gotNextZMin = false;
-		for (unsigned int s = i; s < enemies.size(); s++) {
-			if (enemies[s]->getMin()[axis] < allyBullets[i]->getMin()[axis]) {
-				nextZMin = s - 1;
-				gotNextZMin = true;
-				break;
-			}
+		while (nextZMin < enemies.size() && enemies[nextZMin]->getMin()[axis] > allyBullets[i]->getMax()[axis]) {
+			nextZMin++;
 		}
 
-		if (!gotNextZMin) break;
 		for (unsigned int j = nextZMin; j < enemies.size(); j++) {
-			if (enemies[j]->getMin()[axis] > allyBullets[i]->getMax()[axis]) break;
+			if (enemies[j]->getMax()[axis] < allyBullets[i]->getMin()[axis] ||
+				enemies[j]->getMin()[axis] > allyBullets[i]->getMax()[axis]) break;
 			
 			if (rbAABB::testCollision(*allyBullets[i], *enemies[j])) {
 				enemies[j]->onCollide(*allyBullets[i]);
@@ -115,6 +110,7 @@ void lgc::collisionSolver::clearRemoveables() {
 		if (enemies[i]->isRemoveable()) {
 			enemies[i] = enemies.back();
 			enemies.pop_back();
+			i--;
 		}
 	}
 	
@@ -122,6 +118,7 @@ void lgc::collisionSolver::clearRemoveables() {
 		if (allyBullets[i]->isRemoveable()) {
 			allyBullets[i] = allyBullets.back();
 			allyBullets.pop_back();
+			i--;
 		}
 	}
 	
@@ -129,6 +126,7 @@ void lgc::collisionSolver::clearRemoveables() {
 		if (enemyBullets[i]->isRemoveable()) {
 			enemyBullets[i] = enemyBullets.back();
 			enemyBullets.pop_back();
+			i--;
 		}
 	}
 }

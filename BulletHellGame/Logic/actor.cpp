@@ -99,23 +99,7 @@ void lgc::Collidable::_renderHitbox() {
 	};
 
 	int indices[12][2] = {
-		{5,4},
-		{5,0},
-
-		{4,7},
-		{7,0},
-
-		{6,5},
-		{1,0},
-
-		{3,4},
-		{2,7},
-
-		{6,3},
-		{6,1},
-
-		{3,2},
-		{2,1}
+		{5,4}, {5,0}, {4,7}, {7,0}, {6,5}, {1,0}, {3,4}, {2,7}, {6,3}, {6,1}, {3,2}, {2,1}
 	};
 
 	glBegin(GL_LINES);
@@ -166,9 +150,11 @@ void lgc::Shooter::shoot() {
 	if (!isShooting) return;
 	if (ticksCounter >= shootRate) ticksCounter = 0;
 	if (ticksCounter == 0) {
-		Logic::getInstance().addBullet(new Bullet(
+		auto* newBullet = new Bullet(
 			bulletModel, pos, rot, math::Vector3(0, 0, bulletVel[2]), bulletMaxVel, math::Vector3(0, 0, bulletAccel[2]), bulletDamage, bulletHitbox
-		), isAlly);
+		);
+		newBullet->setMaterials(bulletMTL);
+		Logic::getInstance().addBullet(newBullet, isAlly);
 	}
 
 }

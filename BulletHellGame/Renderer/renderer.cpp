@@ -153,9 +153,10 @@ void Renderer::render() {
 	glLoadIdentity();
 
 	glColor3f(1, 1, 1);
-
+	
 	drawActor(&Logic::getInstance().getPlayer());
 	Logic::getInstance().getPlayer()._renderHitbox();
+
 	drawActor(&Logic::getInstance().getFloor());
 
 	for (auto& a : Logic::getInstance().getEnemies()) {
