@@ -9,16 +9,17 @@ void vis::AssetsManager::loadModels() {
 	loadModel("player", PLAYER);
 	loadModel("props/floor", FLOOR);
 	
-	loadModel("props/tree1", ENVIROMENT);
+	loadModel("props/tree1", ENVIRONMENT);
+	loadModel("props/pin", ENVIRONMENT);
 
-	loadModel("props/house1", ENVIROMENT);
-	loadModel("props/house2", ENVIROMENT);
-	loadModel("props/house3", ENVIROMENT);
-	loadModel("props/house4", ENVIROMENT);
+	loadModel("props/house1", ENVIRONMENT);
+	loadModel("props/house2", ENVIRONMENT);
+	loadModel("props/house3", ENVIRONMENT);
+	loadModel("props/house4", ENVIRONMENT);
 
 	//fixing x, and importing fixed x objects
 	enviromentFixedXIndex = enviroment.size();
-	loadModel("props/street", ENVIROMENT);
+	loadModel("props/street", ENVIRONMENT);
 
 	loadModel("thunder", ENEMY);
 	loadModel("xWings", ENEMY);
@@ -56,7 +57,7 @@ void vis::AssetsManager::loadModel(std::string baseName, ModelType modelType) {
 	case BOOST:
 		boosts.push_back(std::make_pair(obj, mtls));
 		break;
-	case ENVIROMENT:
+	case ENVIRONMENT:
 		enviroment.push_back(std::make_pair(obj, mtls));
 		break;
 	case BULLET:

@@ -5,6 +5,8 @@ Renderer::Renderer() {
 	W = 800, H = 600, zmax = 80;
 	fov = 90, camy = 15;
 	fps = 60, ms = 1000 / fps;
+
+	_debugFlag = false;
 	
 	vis::AssetsManager::getInstance();
 
@@ -155,26 +157,37 @@ void Renderer::render() {
 	glColor3f(1, 1, 1);
 	
 	drawActor(&Logic::getInstance().getPlayer());
-	Logic::getInstance().getPlayer()._renderHitbox();
+	if (_debugFlag)
+		Logic::getInstance().getPlayer()._renderHitbox();
 
 	drawActor(&Logic::getInstance().getFloor());
 
 	for (auto& a : Logic::getInstance().getEnemies()) {
 		if (a.second->isRemoveable()) continue;
 		drawActor(a.second);
-		a.second->_renderHitbox();
+		if (_debugFlag)
+			a.second->_renderHitbox();
 	}
 
 	for (auto& b : Logic::getInstance().getBullets()) {
 		if (b.second->isRemoveable()) continue;
 		drawActor(b.second);
-		b.second->_renderHitbox();
+		if (_debugFlag)
+			b.second->_renderHitbox();
 	}
 
 	for (auto& e : Logic::getInstance().getEnviroment()) {
 		if (e.second.isRemoveable()) continue;
 		drawActor(&e.second);
 	}
+
+	//auto scoretxt = Logic::getInstance().getScore();
+
+	//unsigned char _scoretxt[50];
+	//std::copy(scoretxt.begin(), scoretxt.end(), _scoretxt);
+	//_scoretxt[scoretxt.length()] = 0;
+
+	//Renderer::getInstance().writeToScreen(math::Vector3(20, 20, 0), _scoretxt);
 
 	glutSwapBuffers();
 }
@@ -208,6 +221,20 @@ void Renderer::requestRender() {
 Renderer& Renderer::getInstance() {
 	static Renderer instance;
 	return instance;
+}
+
+void Renderer::switchDebug() {
+	_debugFlag = !_debugFlag;
+}
+
+void Renderer::writeToScreen(math::Vector3 position, const unsigned char* string, void* font, math::Vector3 rgb) {
+	char* c;
+
+	glColor3f(rgb[0], rgb[1], rgb[2]);
+	glRasterPos2f(position[0], position[1]);
+
+	const unsigned char test[] = "texto";
+	glutBitmapString(font, test);
 }
 
 void renderCB() { Renderer::getInstance().render(); }

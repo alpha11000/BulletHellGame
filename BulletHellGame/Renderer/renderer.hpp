@@ -14,6 +14,8 @@ public:
 	std::map<std::string, vis::Material> error_mats = std::map<std::string, vis::Material>();
 
 private:
+	bool _debugFlag;
+
 	Renderer();
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
@@ -27,6 +29,11 @@ public:
 	void drawActor(lgc::Actor* actor);
 	static Renderer& getInstance();
 	void requestRender();
+	void switchDebug();
+
+	//void renderHP();
+	void writeToScreen(math::Vector3 position, const unsigned char* string, void* font = GLUT_BITMAP_TIMES_ROMAN_24, math::Vector3 rgb = math::Vector3());
+
 };
 
 void renderCB();

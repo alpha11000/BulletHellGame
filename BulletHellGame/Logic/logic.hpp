@@ -34,6 +34,8 @@ private:
 
 		void updateInstances();
 		void clearRemoveables();
+
+		void resetInstances();
 	};
 
 	instanceManager InstanceManager;
@@ -53,6 +55,7 @@ public:
 	inline auto& getEnviroment() { return InstanceManager.enviroment; }
 	inline auto& getEnemies() { return InstanceManager.enemies; }
 	inline auto& getBullets() { return InstanceManager.bullets; }
+	inline auto getScore() { return score; }
 
 	inline void addBullet(lgc::Bullet* b, bool isAlly = true) {
 		InstanceManager.addInstance(b, isAlly);
@@ -65,6 +68,7 @@ public:
 
 	void update(int val);
 	void onKeysUpdate();
+	void reset();
 
 	static Logic& getInstance();
 };

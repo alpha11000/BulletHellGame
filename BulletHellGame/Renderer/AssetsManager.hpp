@@ -8,7 +8,7 @@
 namespace vis {
 	class AssetsManager {
 	private:
-		enum ModelType { PLAYER, ENEMY, BOOST, ENVIROMENT, BULLET, FLOOR};
+		enum ModelType { PLAYER, ENEMY, BOOST, ENVIRONMENT, BULLET, FLOOR};
 
 		std::string resFolder;
 		std::pair<GameObject, MTL> player;

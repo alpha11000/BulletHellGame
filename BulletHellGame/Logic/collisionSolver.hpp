@@ -29,8 +29,8 @@ namespace lgc {
 
 	class collisionSolver {
 	private:
+		static rbAABB ship[3];
 		static rbAABB player;
-		static rbAABB ship;
 		static rbAABB bullet;
 
 		std::vector< Ship* > enemies;
@@ -48,10 +48,11 @@ namespace lgc {
 		void insertCollidable(Bullet* b, bool isAlly);
 
 		inline static rbAABB* getPlayerHitbox() { return &player; }
-		inline static rbAABB* getShipHitbox() { return &ship; }
+		inline static rbAABB* getShipHitbox(int lvl) { return &ship[lvl]; }
 		inline static rbAABB* getBulletHitbox() { return &bullet; }
 		void clearRemoveables();
 
+		void resetInstances();
 	};
 }
 

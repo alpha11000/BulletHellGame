@@ -40,6 +40,7 @@ lgc::Moveable::Moveable(
 	spdLimit(0.05) {}
 
 void lgc::Moveable::updateVelocity() {
+	static int acc_reduc = 4;
 	if (math::euclidean(velocity) < maxVelMagnitude
 		&& isAccelerating) {
 		velocity = velocity + accel;
@@ -54,9 +55,9 @@ void lgc::Moveable::updateVelocity() {
 				std::abs(velocity[1]) >= spdLimit ||
 				std::abs(velocity[2]) >= spdLimit)
 			{
-				velocity[0] -= velocity[0] / 6;
-				velocity[1] -= velocity[1] / 6;
-				velocity[2] -= velocity[2] / 6;
+				velocity[0] -= velocity[0] / acc_reduc;
+				velocity[1] -= velocity[1] / acc_reduc;
+				velocity[2] -= velocity[2] / acc_reduc;
 			}
 			else
 				velocity = math::Vector3();
@@ -81,7 +82,7 @@ lgc::Collidable::Collidable(
 	math::Vector3 position,
 	math::Vector3 rotation
 ) :
-	shape(shape), 
+	shape(shape),
 	Actor(gameObject, position, rotation) {}
 
 void lgc::Collidable::_renderHitbox() {

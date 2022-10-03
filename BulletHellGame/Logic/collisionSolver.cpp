@@ -17,7 +17,12 @@ bool lgc::rbAABB::testCollision(Collidable& c1, Collidable& c2) {
 }
 
 
-lgc::rbAABB lgc::collisionSolver::ship = lgc::rbAABB(1.0, 1.0, 1.0);
+lgc::rbAABB lgc::collisionSolver::ship[3] = {
+	lgc::rbAABB(2.5, 1.0, 1.0),
+	lgc::rbAABB(1.5, 1.5, 1.0),
+	lgc::rbAABB(4.5, 1.0, 3.0)
+};
+
 lgc::rbAABB lgc::collisionSolver::bullet = lgc::rbAABB(0.3, 0.3, 0.6);
 lgc::rbAABB lgc::collisionSolver::player = lgc::rbAABB(2.f, 1.3f, 2.f);
 
@@ -130,4 +135,10 @@ void lgc::collisionSolver::clearRemoveables() {
 			i--;
 		}
 	}
+}
+
+void lgc::collisionSolver::resetInstances() {
+	enemies.clear();
+	allyBullets.clear();
+	enemyBullets.clear();
 }

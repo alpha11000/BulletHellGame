@@ -35,13 +35,20 @@ void Logic::update(int val) {
 	CollisionSolver.runCollisions();
 	InstanceManager.clearRemoveables();
 
+	if (InstanceManager.player.isRemoveable())
+		reset();
+
 	glutTimerFunc(ms, updateCB, 0);
 }
 
 void Logic::onKeysUpdate() {
 	InstanceManager.player.setAccelerating(false);
 	InstanceManager.player.setAcceleration(math::Vector3());
-	// Adicionar tecla pra ver as caixas de colisão
+	
+	if (Controller::getInstance().isPressed('d')) {
+		Renderer::getInstance().switchDebug();
+	}
+
 	if (Controller::getInstance().specialIsPressed(GLUT_KEY_LEFT)) {
 		InstanceManager.player.changeAcceleration(math::Vector3(0.1, 0, 0));
 		InstanceManager.player.setAccelerating(true);
@@ -97,4 +104,14 @@ void updateCB(int val) {
 
 void genScenarioCB(int val) {
 	Logic::getInstance().generateScenario();
+}
+
+void Logic::reset() {
+	InstanceManager.resetInstances();
+	CollisionSolver.resetInstances();
+
+	lvl = 0, lvls = 100;
+	std::cout << "Game Over !\n";
+	std::cout << "Total score: " << score << "\n";
+	score = 0;
 }
